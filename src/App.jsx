@@ -10,7 +10,7 @@ export default function App() {
   const [bpm, setBpm] = useState(120)
   const hydrated = useRef(false)
 
-  const { lanes, addLane, removeLane, updateParam, updateCode, toggleMute, toggleSolo, loadLanes } = useLanes()
+  const { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes } = useLanes()
   const { isPlaying, isInitializing, error, play, stop, updateBpm, debouncedPlay } = useStrudel()
 
   // Hydrate from URL on first render
@@ -75,6 +75,7 @@ export default function App() {
         onRemoveLane={removeLane}
         onUpdateParam={updateParam}
         onUpdateCode={updateCode}
+        onUpdatePromptAndCode={updatePromptAndCode}
         onToggleMute={toggleMute}
         onToggleSolo={toggleSolo}
       />

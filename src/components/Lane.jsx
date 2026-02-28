@@ -1,26 +1,48 @@
 import { useState, useRef } from 'react'
 import ParamSlider from './ParamSlider'
+import { generatePattern } from '../utils/claude'
 
-export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onToggleMute, onToggleSolo }) {
+export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onUpdatePromptAndCode, onToggleMute, onToggleSolo }) {
   const [editingName, setEditingName] = useState(false)
   const [editingCode, setEditingCode] = useState(false)
+  const [editingPrompt, setEditingPrompt] = useState(false)
   const [nameValue, setNameValue] = useState(lane.name)
   const [codeValue, setCodeValue] = useState(lane.baseCode)
+  const [promptValue, setPromptValue] = useState(lane.prompt || '')
+  const [regenerating, setRegenerating] = useState(false)
+  const [regenError, setRegenError] = useState(null)
   const codeDebounce = useRef(null)
 
-  const handleNameBlur = () => {
-    setEditingName(false)
-    if (nameValue.trim() !== lane.name) {
-      // Name update would need to propagate up; for now just keep local
-    }
+  // Keep local values in sync when lane prop changes (e.g. from URL hydration)
+  const prevBaseCode = useRef(lane.baseCode)
+  if (lane.baseCode !== prevBaseCode.current) {
+    prevBaseCode.current = lane.baseCode
+    setCodeValue(lane.baseCode)
   }
+
+  const handleNameBlur = () => setEditingName(false)
 
   const handleCodeChange = (val) => {
     setCodeValue(val)
     clearTimeout(codeDebounce.current)
-    codeDebounce.current = setTimeout(() => {
-      onUpdateCode(lane.id, val)
-    }, 500)
+    codeDebounce.current = setTimeout(() => onUpdateCode(lane.id, val), 500)
+  }
+
+  const handleRegenerate = async () => {
+    const prompt = promptValue.trim()
+    if (!prompt) return
+    setRegenerating(true)
+    setRegenError(null)
+    try {
+      const newCode = await generatePattern(prompt)
+      onUpdatePromptAndCode(lane.id, prompt, newCode)
+      setCodeValue(newCode)
+      setEditingPrompt(false)
+    } catch (err) {
+      setRegenError(err.message)
+    } finally {
+      setRegenerating(false)
+    }
   }
 
   const isMuted = lane.muted
@@ -106,6 +128,56 @@ export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onTo
             ×
           </button>
         </div>
+      </div>
+
+      {/* Prompt edit row */}
+      <div className="mt-2">
+        {editingPrompt ? (
+          <div className="flex gap-2 items-center">
+            <input
+              value={promptValue}
+              onChange={e => setPromptValue(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleRegenerate()
+                if (e.key === 'Escape') setEditingPrompt(false)
+              }}
+              disabled={regenerating}
+              className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-violet-500 disabled:opacity-50"
+              autoFocus
+            />
+            <button
+              onClick={handleRegenerate}
+              disabled={regenerating || !promptValue.trim()}
+              className="px-3 py-1.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap"
+            >
+              {regenerating ? (
+                <>
+                  <span className="inline-block w-2.5 h-2.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Generating...
+                </>
+              ) : '↺ Regenerate'}
+            </button>
+            <button
+              onClick={() => { setEditingPrompt(false); setRegenError(null) }}
+              className="text-xs text-zinc-600 hover:text-zinc-400 px-1"
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setEditingPrompt(true)}
+            className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors group"
+          >
+            <span className="group-hover:text-violet-500 transition-colors">↺</span>
+            <span className="truncate max-w-xs italic">
+              {lane.prompt || 'edit prompt to regenerate…'}
+            </span>
+          </button>
+        )}
+        {regenError && (
+          <p className="mt-1 text-xs text-red-400">{regenError}</p>
+        )}
       </div>
 
       {/* Param sliders */}

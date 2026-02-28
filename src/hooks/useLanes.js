@@ -19,11 +19,12 @@ function inferEmoji(name) {
 export function useLanes() {
   const [lanes, setLanes] = useState([])
 
-  const addLane = (name, baseCode) => {
+  const addLane = (name, baseCode, prompt = '') => {
     const newLane = {
       id: uuidv4(),
       name,
       emoji: inferEmoji(name),
+      prompt,
       baseCode,
       params: { ...DEFAULT_PARAMS },
       muted: false,
@@ -46,6 +47,10 @@ export function useLanes() {
     setLanes(prev => prev.map(l => l.id === id ? { ...l, baseCode } : l))
   }
 
+  const updatePromptAndCode = (id, prompt, baseCode) => {
+    setLanes(prev => prev.map(l => l.id === id ? { ...l, prompt, baseCode } : l))
+  }
+
   const toggleMute = (id) => {
     setLanes(prev => prev.map(l => l.id === id ? { ...l, muted: !l.muted } : l))
   }
@@ -56,5 +61,5 @@ export function useLanes() {
 
   const loadLanes = (newLanes) => setLanes(newLanes)
 
-  return { lanes, addLane, removeLane, updateParam, updateCode, toggleMute, toggleSolo, loadLanes }
+  return { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes }
 }

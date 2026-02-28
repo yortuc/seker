@@ -26,7 +26,7 @@ export default function AddLanePanel({ onAddLane }) {
     try {
       const code = await generatePattern(description)
       const name = inferName(description)
-      onAddLane(name, code)
+      onAddLane(name, code, description)
       setDescription('')
     } catch (err) {
       setError(err.message)

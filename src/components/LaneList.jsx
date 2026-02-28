@@ -7,6 +7,7 @@ export default function LaneList({
   onRemoveLane,
   onUpdateParam,
   onUpdateCode,
+  onUpdatePromptAndCode,
   onToggleMute,
   onToggleSolo,
 }) {
@@ -27,6 +28,7 @@ export default function LaneList({
           onRemove={onRemoveLane}
           onUpdateParam={onUpdateParam}
           onUpdateCode={onUpdateCode}
+          onUpdatePromptAndCode={onUpdatePromptAndCode}
           onToggleMute={onToggleMute}
           onToggleSolo={onToggleSolo}
         />
