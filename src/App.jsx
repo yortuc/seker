@@ -10,8 +10,8 @@ export default function App() {
   const [bpm, setBpm] = useState(120)
   const hydrated = useRef(false)
 
-  const { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes } = useLanes()
-  const { isPlaying, isInitializing, error, play, stop, updateBpm, debouncedPlay } = useStrudel()
+  const { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes, clearLanes } = useLanes()
+  const { isPlaying, isInitializing, error, play, stop, debouncedPlay } = useStrudel()
 
   // Hydrate from URL on first render
   useEffect(() => {
@@ -40,14 +40,17 @@ export default function App() {
   }, [lanes, bpm, isPlaying])
 
   const handlePlay = async () => {
-    const code = buildEvalCode(lanes, bpm)
-    await updateBpm(bpm)
-    await play(code)
+    await play(buildEvalCode(lanes, bpm))
+  }
+
+  const handleNew = () => {
+    stop()
+    clearLanes()
+    setBpm(120)
   }
 
   const handleBpmChange = (newBpm) => {
     setBpm(newBpm)
-    if (isPlaying) updateBpm(newBpm)
   }
 
   return (
@@ -59,6 +62,8 @@ export default function App() {
         onPlay={handlePlay}
         onStop={stop}
         onBpmChange={handleBpmChange}
+        onNew={handleNew}
+        hasLanes={lanes.length > 0}
       />
 
       {error && (

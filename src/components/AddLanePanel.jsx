@@ -4,6 +4,7 @@ import { generatePattern } from '../utils/claude'
 export default function AddLanePanel({ onAddLane }) {
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
+  const [step, setStep] = useState('')
   const [error, setError] = useState(null)
 
   const inferName = (desc) => {
@@ -13,25 +14,25 @@ export default function AddLanePanel({ onAddLane }) {
     if (lower.includes('chord') || lower.includes('pad')) return 'Chords'
     if (lower.includes('piano') || lower.includes('keys') || lower.includes('arpy') || lower.includes('pluck')) return 'Piano'
     if (lower.includes('melody') || lower.includes('lead') || lower.includes('synth') || lower.includes('moog') || lower.includes('supersaw')) return 'Melody'
-    if (lower.includes('ambient') || lower.includes('atmosphere') || lower.includes('pad')) return 'Ambient'
-    // Capitalize first word as fallback
+    if (lower.includes('ambient') || lower.includes('atmosphere')) return 'Ambient'
     return desc.split(' ').slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
 
   const handleGenerate = async () => {
     if (!description.trim()) return
-
     setLoading(true)
+    setStep('')
     setError(null)
     try {
-      const code = await generatePattern(description)
+      const { code, analysis } = await generatePattern(description, setStep)
       const name = inferName(description)
-      onAddLane(name, code, description)
+      onAddLane(name, code, description, analysis)
       setDescription('')
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
+      setStep('')
     }
   }
 
@@ -43,7 +44,7 @@ export default function AddLanePanel({ onAddLane }) {
           value={description}
           onChange={e => setDescription(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !loading && handleGenerate()}
-          placeholder="Describe a pattern... (e.g. 'funky drum pattern', 'jazzy bass line')"
+          placeholder="Describe a pattern... (e.g. 'funky drum pattern', 'muse - muscle museum bass')"
           disabled={loading}
           className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-violet-500 disabled:opacity-50"
         />
@@ -55,11 +56,9 @@ export default function AddLanePanel({ onAddLane }) {
           {loading ? (
             <>
               <span className="inline-block w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Generating...
+              {step || 'Working…'}
             </>
-          ) : (
-            'Generate ✨'
-          )}
+          ) : 'Generate ✨'}
         </button>
       </div>
       {error && (

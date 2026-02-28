@@ -10,6 +10,7 @@ export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onUp
   const [codeValue, setCodeValue] = useState(lane.baseCode)
   const [promptValue, setPromptValue] = useState(lane.prompt || '')
   const [regenerating, setRegenerating] = useState(false)
+  const [regenStep, setRegenStep] = useState('')
   const [regenError, setRegenError] = useState(null)
   const codeDebounce = useRef(null)
 
@@ -32,16 +33,18 @@ export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onUp
     const prompt = promptValue.trim()
     if (!prompt) return
     setRegenerating(true)
+    setRegenStep('')
     setRegenError(null)
     try {
-      const newCode = await generatePattern(prompt)
-      onUpdatePromptAndCode(lane.id, prompt, newCode)
+      const { code: newCode, analysis } = await generatePattern(prompt, setRegenStep)
+      onUpdatePromptAndCode(lane.id, prompt, newCode, analysis)
       setCodeValue(newCode)
       setEditingPrompt(false)
     } catch (err) {
       setRegenError(err.message)
     } finally {
       setRegenerating(false)
+      setRegenStep('')
     }
   }
 
@@ -153,7 +156,7 @@ export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onUp
               {regenerating ? (
                 <>
                   <span className="inline-block w-2.5 h-2.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Generating...
+                  {regenStep || 'Working…'}
                 </>
               ) : '↺ Regenerate'}
             </button>
@@ -177,6 +180,19 @@ export default function Lane({ lane, onRemove, onUpdateParam, onUpdateCode, onUp
         )}
         {regenError && (
           <p className="mt-1 text-xs text-red-400">{regenError}</p>
+        )}
+        {!editingPrompt && lane.analysis && (lane.analysis.key || lane.analysis.rhythm || lane.analysis.character) && (
+          <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1">
+            {lane.analysis.key && (
+              <span className="text-xs text-zinc-600">{lane.analysis.key}</span>
+            )}
+            {lane.analysis.rhythm && (
+              <span className="text-xs text-zinc-700">· {lane.analysis.rhythm}</span>
+            )}
+            {lane.analysis.character && (
+              <span className="text-xs text-zinc-700">· {lane.analysis.character}</span>
+            )}
+          </div>
         )}
       </div>
 

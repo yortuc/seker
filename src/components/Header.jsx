@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function Header({ isPlaying, isInitializing, bpm, onPlay, onStop, onBpmChange }) {
+export default function Header({ isPlaying, isInitializing, bpm, onPlay, onStop, onBpmChange, onNew, hasLanes }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = () => {
@@ -52,7 +52,15 @@ export default function Header({ isPlaying, isInitializing, bpm, onPlay, onStop,
           <span className="text-xs text-violet-400 tabular-nums w-7">{bpm}</span>
         </div>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          {hasLanes && (
+            <button
+              onClick={onNew}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:border-zinc-500 transition-colors"
+            >
+              New
+            </button>
+          )}
           <button
             onClick={handleShare}
             className="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:border-zinc-500"
@@ -77,5 +85,6 @@ export default function Header({ isPlaying, isInitializing, bpm, onPlay, onStop,
         </div>
       </div>
     </header>
+
   )
 }
