@@ -63,5 +63,13 @@ export function useLanes() {
   const loadLanes = (newLanes) => setLanes(newLanes)
   const clearLanes = () => setLanes([])
 
-  return { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes, clearLanes }
+  const applySceneState = (laneStates) => {
+    setLanes(prev => prev.map(l => {
+      const s = laneStates[l.id]
+      if (!s) return l
+      return { ...l, muted: s.muted, solo: s.solo, params: { ...l.params, ...s.params } }
+    }))
+  }
+
+  return { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes, clearLanes, applySceneState }
 }

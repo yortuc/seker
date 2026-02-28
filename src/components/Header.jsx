@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function Header({ isPlaying, isInitializing, bpm, onPlay, onStop, onBpmChange, onNew, hasLanes }) {
+export default function Header({ isPlaying, isInitializing, bpm, globalLpf, onPlay, onStop, onBpmChange, onGlobalLpfChange, onNew, hasLanes }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = () => {
@@ -50,6 +50,22 @@ export default function Header({ isPlaying, isInitializing, bpm, onPlay, onStop,
             className="w-24 h-1.5 appearance-none bg-zinc-700 rounded-full cursor-pointer accent-violet-500"
           />
           <span className="text-xs text-violet-400 tabular-nums w-7">{bpm}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-zinc-500 whitespace-nowrap">LPF</span>
+          <input
+            type="range"
+            min={200}
+            max={8000}
+            step={50}
+            value={globalLpf}
+            onChange={e => onGlobalLpfChange(Number(e.target.value))}
+            className="w-24 h-1.5 appearance-none bg-zinc-700 rounded-full cursor-pointer accent-emerald-500"
+          />
+          <span className={`text-xs tabular-nums w-14 ${globalLpf < 2000 ? 'text-emerald-400' : 'text-zinc-600'}`}>
+            {globalLpf >= 8000 ? 'open' : `${Math.round(globalLpf)}Hz`}
+          </span>
         </div>
 
         <div className="ml-auto flex items-center gap-2">
