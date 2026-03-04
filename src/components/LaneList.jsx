@@ -4,12 +4,16 @@ import AddLanePanel from './AddLanePanel'
 export default function LaneList({
   lanes,
   onAddLane,
+  onAddDrumLane,
   onRemoveLane,
   onUpdateParam,
   onUpdateCode,
   onUpdatePromptAndCode,
   onToggleMute,
   onToggleSolo,
+  onToggleDrumStep,
+  onAddDrumTrack,
+  onRemoveDrumTrack,
 }) {
   return (
     <main className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-3">
@@ -31,10 +35,13 @@ export default function LaneList({
           onUpdatePromptAndCode={onUpdatePromptAndCode}
           onToggleMute={onToggleMute}
           onToggleSolo={onToggleSolo}
+          onToggleDrumStep={onToggleDrumStep}
+          onAddDrumTrack={onAddDrumTrack}
+          onRemoveDrumTrack={onRemoveDrumTrack}
         />
       ))}
 
-      <AddLanePanel onAddLane={onAddLane} />
+      <AddLanePanel onAddLane={onAddLane} onAddDrumLane={onAddDrumLane} />
     </main>
   )
 }

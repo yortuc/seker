@@ -13,7 +13,14 @@ export default function App() {
   const [scenes, setScenes] = useState([])
   const hydrated = useRef(false)
 
-  const { lanes, addLane, removeLane, updateParam, updateCode, updatePromptAndCode, toggleMute, toggleSolo, loadLanes, clearLanes, applySceneState } = useLanes()
+  const {
+    lanes,
+    addLane, addDrumLane, removeLane,
+    updateParam, updateCode, updatePromptAndCode,
+    toggleMute, toggleSolo,
+    toggleDrumStep, addDrumTrack, removeDrumTrack,
+    loadLanes, clearLanes, applySceneState
+  } = useLanes()
   const { isPlaying, isInitializing, error, play, stop, debouncedPlay } = useStrudel()
 
   // Hydrate from URL on first render
@@ -131,12 +138,16 @@ export default function App() {
       <LaneList
         lanes={lanes}
         onAddLane={addLane}
+        onAddDrumLane={addDrumLane}
         onRemoveLane={removeLane}
         onUpdateParam={updateParam}
         onUpdateCode={updateCode}
         onUpdatePromptAndCode={updatePromptAndCode}
         onToggleMute={toggleMute}
         onToggleSolo={toggleSolo}
+        onToggleDrumStep={toggleDrumStep}
+        onAddDrumTrack={addDrumTrack}
+        onRemoveDrumTrack={removeDrumTrack}
       />
     </div>
   )

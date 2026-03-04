@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { generatePattern } from '../utils/claude'
 
-export default function AddLanePanel({ onAddLane }) {
+export default function AddLanePanel({ onAddLane, onAddDrumLane }) {
+  const [activeTab, setActiveTab] = useState('strudel')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState('')
@@ -38,33 +39,84 @@ export default function AddLanePanel({ onAddLane }) {
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 border-dashed rounded-xl p-4">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && !loading && handleGenerate()}
-          placeholder="Describe a pattern... (e.g. 'funky drum pattern', 'muse - muscle museum bass')"
-          disabled={loading}
-          className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-violet-500 disabled:opacity-50"
-        />
+      {/* Track type tabs */}
+      <div className="flex gap-1.5 mb-3">
         <button
-          onClick={handleGenerate}
-          disabled={loading || !description.trim()}
-          className="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors whitespace-nowrap flex items-center gap-2"
+          onClick={() => setActiveTab('strudel')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
+            activeTab === 'strudel'
+              ? 'bg-violet-600 text-white'
+              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+          }`}
         >
-          {loading ? (
-            <>
-              <span className="inline-block w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              {step || 'Working…'}
-            </>
-          ) : 'Generate ✨'}
+          Strudel ✨
+        </button>
+        <button
+          onClick={() => setActiveTab('drum')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
+            activeTab === 'drum'
+              ? 'bg-violet-600 text-white'
+              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+          }`}
+        >
+          Drums 🥁
+        </button>
+        <button
+          disabled
+          className="px-3 py-1.5 rounded-lg text-xs font-mono bg-zinc-800/40 text-zinc-600 cursor-not-allowed"
+          title="Coming soon"
+        >
+          Instrument 🎸 <span className="text-zinc-700">· soon</span>
         </button>
       </div>
-      {error && (
-        <p className="mt-2 text-xs text-red-400 bg-red-950/30 border border-red-900/50 rounded-lg px-3 py-2">
-          {error}
-        </p>
+
+      {/* Strudel panel */}
+      {activeTab === 'strudel' && (
+        <>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && !loading && handleGenerate()}
+              placeholder="Describe a pattern… (e.g. 'funky drum pattern', 'muse - muscle museum bass')"
+              disabled={loading}
+              className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-violet-500 disabled:opacity-50"
+            />
+            <button
+              onClick={handleGenerate}
+              disabled={loading || !description.trim()}
+              className="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors whitespace-nowrap flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <span className="inline-block w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {step || 'Working…'}
+                </>
+              ) : 'Generate ✨'}
+            </button>
+          </div>
+          {error && (
+            <p className="mt-2 text-xs text-red-400 bg-red-950/30 border border-red-900/50 rounded-lg px-3 py-2">
+              {error}
+            </p>
+          )}
+        </>
+      )}
+
+      {/* Drum panel */}
+      {activeTab === 'drum' && (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-zinc-500">
+            16-step sequencer · bd sd hh ho cp rows · click steps to toggle
+          </p>
+          <button
+            onClick={onAddDrumLane}
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors whitespace-nowrap"
+          >
+            Add drum track
+          </button>
+        </div>
       )}
     </div>
   )
