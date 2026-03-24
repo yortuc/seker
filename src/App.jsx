@@ -6,19 +6,39 @@ import { readUrlState, writeUrlState } from './utils/urlState'
 import Header from './components/Header'
 import LaneList from './components/LaneList'
 import SceneBar from './components/SceneBar'
+import GenLog from './components/GenLog'
 
 export default function App() {
   const [bpm, setBpm] = useState(120)
   const [globalLpf, setGlobalLpf] = useState(8000)
+  const [globalKey, setGlobalKey] = useState({ root: 'C', scale: 'minor' })
   const [scenes, setScenes] = useState([])
+  const [genLog, setGenLog] = useState([])
+
+  const handleLog = (type, sessionId, data) => {
+    setGenLog(prev => {
+      if (type === 'start') {
+        return [{ id: sessionId, prompt: data, status: 'analyzing', analysis: null, code: null, error: null }, ...prev].slice(0, 20)
+      }
+      return prev.map(s => {
+        if (s.id !== sessionId) return s
+        if (type === 'analysis') return { ...s, analysis: data, status: 'generating' }
+        if (type === 'code')     return { ...s, code: data, status: 'done' }
+        if (type === 'error')    return { ...s, error: data, status: 'error' }
+        return s
+      })
+    })
+  }
   const hydrated = useRef(false)
 
   const {
     lanes,
-    addLane, addDrumLane, removeLane,
+    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
     updateParam, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack,
+    updateTabCell, updateTabColumn, updateTabInstrument,
+    toggleNoteGridCell, setNoteGridCell, updateNoteGridInstrument,
     loadLanes, clearLanes, applySceneState
   } = useLanes()
   const { isPlaying, isInitializing, error, play, stop, debouncedPlay } = useStrudel()
@@ -30,6 +50,7 @@ export default function App() {
       if (saved.lanes) loadLanes(saved.lanes)
       if (saved.bpm) setBpm(saved.bpm)
       if (saved.globalLpf != null) setGlobalLpf(saved.globalLpf)
+      if (saved.globalKey) setGlobalKey(saved.globalKey)
       if (saved.scenes) setScenes(saved.scenes)
     }
     hydrated.current = true
@@ -42,7 +63,7 @@ export default function App() {
       window.history.replaceState(null, '', window.location.pathname)
       return
     }
-    writeUrlState({ lanes, bpm, globalLpf, scenes })
+    writeUrlState({ lanes, bpm, globalLpf, globalKey, scenes })
   }, [lanes, bpm, globalLpf, scenes])
 
   useEffect(() => {
@@ -74,6 +95,7 @@ export default function App() {
     clearLanes()
     setBpm(120)
     setGlobalLpf(8000)
+    setGlobalKey({ root: 'C', scale: 'minor' })
     setScenes([])
   }
 
@@ -111,10 +133,12 @@ export default function App() {
         isInitializing={isInitializing}
         bpm={bpm}
         globalLpf={globalLpf}
+        globalKey={globalKey}
         onPlay={handlePlay}
         onStop={stop}
         onBpmChange={handleBpmChange}
         onGlobalLpfChange={setGlobalLpf}
+        onGlobalKeyChange={setGlobalKey}
         onNew={handleNew}
         hasLanes={lanes.length > 0}
       />
@@ -135,10 +159,15 @@ export default function App() {
         onDelete={deleteScene}
       />
 
-      <LaneList
-        lanes={lanes}
+      <div className="max-w-5xl mx-auto px-4 flex gap-4 items-start">
+        <div className="flex-1 min-w-0">
+          <LaneList
+            lanes={lanes}
+            globalKey={globalKey}
         onAddLane={addLane}
         onAddDrumLane={addDrumLane}
+        onAddInstrumentLane={addInstrumentLane}
+        onAddNoteGridLane={addNoteGridLane}
         onRemoveLane={removeLane}
         onUpdateParam={updateParam}
         onUpdateCode={updateCode}
@@ -148,7 +177,17 @@ export default function App() {
         onToggleDrumStep={toggleDrumStep}
         onAddDrumTrack={addDrumTrack}
         onRemoveDrumTrack={removeDrumTrack}
-      />
+        onUpdateTabCell={updateTabCell}
+        onUpdateTabColumn={updateTabColumn}
+        onUpdateTabInstrument={updateTabInstrument}
+        onToggleNoteGridCell={toggleNoteGridCell}
+        onSetNoteGridCell={setNoteGridCell}
+        onUpdateNoteGridInstrument={updateNoteGridInstrument}
+        onLog={handleLog}
+          />
+        </div>
+        <GenLog sessions={genLog} />
+      </div>
     </div>
   )
 }

@@ -1,6 +1,11 @@
 import { useState } from 'react'
 
-export default function Header({ isPlaying, isInitializing, bpm, globalLpf, onPlay, onStop, onBpmChange, onGlobalLpfChange, onNew, hasLanes }) {
+const ROOT_NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+const SCALE_GROUPS = [
+  { label: 'Western', scales: ['major', 'minor', 'dorian', 'phrygian', 'mixolydian', 'harmonic minor', 'pentatonic'] },
+]
+
+export default function Header({ isPlaying, isInitializing, bpm, globalLpf, globalKey, onPlay, onStop, onBpmChange, onGlobalLpfChange, onGlobalKeyChange, onNew, hasLanes }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = () => {
@@ -66,6 +71,28 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, onPl
           <span className={`text-xs tabular-nums w-14 ${globalLpf < 2000 ? 'text-emerald-400' : 'text-zinc-600'}`}>
             {globalLpf >= 8000 ? 'open' : `${Math.round(globalLpf)}Hz`}
           </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-zinc-500 whitespace-nowrap">Key</span>
+          <select
+            value={globalKey.root}
+            onChange={e => onGlobalKeyChange({ ...globalKey, root: e.target.value })}
+            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-amber-400 font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
+          >
+            {ROOT_NOTES.map(n => <option key={n} value={n}>{n}</option>)}
+          </select>
+          <select
+            value={globalKey.scale}
+            onChange={e => onGlobalKeyChange({ ...globalKey, scale: e.target.value })}
+            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-amber-400 font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
+          >
+            {SCALE_GROUPS.map(group => (
+              <optgroup key={group.label} label={group.label}>
+                {group.scales.map(s => <option key={s} value={s}>{s}</option>)}
+              </optgroup>
+            ))}
+          </select>
         </div>
 
         <div className="ml-auto flex items-center gap-2">

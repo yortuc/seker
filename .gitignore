@@ -2,3 +2,10 @@ node_modules/
 dist/
 .env.local
 .env*.local
+.claude/
+.DS_Store
+
+# Dataset pipeline — generated files & model weights
+dataset/models/
+dataset/output/
+dataset/runs/

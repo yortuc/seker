@@ -1,10 +1,13 @@
 import { useState, useRef } from 'react'
 import ParamSlider from './ParamSlider'
 import DrumLane from './DrumLane'
+import GuitarTabLane from './GuitarTabLane'
+import NoteGridLane from './NoteGridLane'
 import { generatePattern } from '../utils/claude'
 
 export default function Lane({
   lane,
+  onLog,
   onRemove,
   onUpdateParam,
   onUpdateCode,
@@ -14,6 +17,12 @@ export default function Lane({
   onToggleDrumStep,
   onAddDrumTrack,
   onRemoveDrumTrack,
+  onUpdateTabCell,
+  onUpdateTabColumn,
+  onUpdateTabInstrument,
+  onToggleNoteGridCell,
+  onSetNoteGridCell,
+  onUpdateNoteGridInstrument,
 }) {
   const [editingName, setEditingName] = useState(false)
   const [editingCode, setEditingCode] = useState(false)
@@ -50,7 +59,7 @@ export default function Lane({
     setRegenStep('')
     setRegenError(null)
     try {
-      const { code: newCode, analysis } = await generatePattern(prompt, setRegenStep)
+      const { code: newCode, analysis } = await generatePattern(prompt, setRegenStep, null, onLog)
       onUpdatePromptAndCode(lane.id, prompt, newCode, analysis)
       setCodeValue(newCode)
       setEditingPrompt(false)
@@ -99,6 +108,20 @@ export default function Lane({
             onToggleStep={onToggleDrumStep}
             onAddTrack={onAddDrumTrack}
             onRemoveTrack={onRemoveDrumTrack}
+          />
+        ) : laneType === 'instrument' ? (
+          <GuitarTabLane
+            lane={lane}
+            onUpdateTabCell={onUpdateTabCell}
+            onUpdateTabColumn={onUpdateTabColumn}
+            onUpdateTabInstrument={onUpdateTabInstrument}
+          />
+        ) : laneType === 'notegrid' ? (
+          <NoteGridLane
+            lane={lane}
+            onToggleCell={onToggleNoteGridCell}
+            onSetCell={onSetNoteGridCell}
+            onChangeInstrument={onUpdateNoteGridInstrument}
           />
         ) : (
           <div className="flex-1 min-w-0">
@@ -158,7 +181,7 @@ export default function Lane({
       </div>
 
       {/* Prompt / analysis row — strudel only */}
-      {laneType === 'strudel' && (
+      {(laneType === 'strudel' || laneType == null) && (
         <div className="mt-2">
           {editingPrompt ? (
             <div className="flex gap-2 items-center">

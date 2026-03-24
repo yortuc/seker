@@ -3,8 +3,12 @@ import AddLanePanel from './AddLanePanel'
 
 export default function LaneList({
   lanes,
+  globalKey,
+  onLog,
   onAddLane,
   onAddDrumLane,
+  onAddInstrumentLane,
+  onAddNoteGridLane,
   onRemoveLane,
   onUpdateParam,
   onUpdateCode,
@@ -14,9 +18,15 @@ export default function LaneList({
   onToggleDrumStep,
   onAddDrumTrack,
   onRemoveDrumTrack,
+  onUpdateTabCell,
+  onUpdateTabColumn,
+  onUpdateTabInstrument,
+  onToggleNoteGridCell,
+  onSetNoteGridCell,
+  onUpdateNoteGridInstrument,
 }) {
   return (
-    <main className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-3">
+    <main className="py-6 flex flex-col gap-3">
       {lanes.length === 0 && (
         <div className="text-center py-16 text-zinc-600">
           <p className="text-4xl mb-3">♩</p>
@@ -29,6 +39,7 @@ export default function LaneList({
         <Lane
           key={lane.id}
           lane={lane}
+          onLog={onLog}
           onRemove={onRemoveLane}
           onUpdateParam={onUpdateParam}
           onUpdateCode={onUpdateCode}
@@ -38,10 +49,23 @@ export default function LaneList({
           onToggleDrumStep={onToggleDrumStep}
           onAddDrumTrack={onAddDrumTrack}
           onRemoveDrumTrack={onRemoveDrumTrack}
+          onUpdateTabCell={onUpdateTabCell}
+          onUpdateTabColumn={onUpdateTabColumn}
+          onUpdateTabInstrument={onUpdateTabInstrument}
+          onToggleNoteGridCell={onToggleNoteGridCell}
+          onSetNoteGridCell={onSetNoteGridCell}
+          onUpdateNoteGridInstrument={onUpdateNoteGridInstrument}
         />
       ))}
 
-      <AddLanePanel onAddLane={onAddLane} onAddDrumLane={onAddDrumLane} />
+      <AddLanePanel
+        globalKey={globalKey}
+        onLog={onLog}
+        onAddLane={onAddLane}
+        onAddDrumLane={onAddDrumLane}
+        onAddInstrumentLane={onAddInstrumentLane}
+        onAddNoteGridLane={onAddNoteGridLane}
+      />
     </main>
   )
 }

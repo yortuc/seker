@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { generatePattern } from '../utils/claude'
 
-export default function AddLanePanel({ onAddLane, onAddDrumLane }) {
+export default function AddLanePanel({ globalKey, onLog, onAddLane, onAddDrumLane, onAddInstrumentLane, onAddNoteGridLane }) {
   const [activeTab, setActiveTab] = useState('strudel')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ export default function AddLanePanel({ onAddLane, onAddDrumLane }) {
     setStep('')
     setError(null)
     try {
-      const { code, analysis } = await generatePattern(description, setStep)
+      const { code, analysis } = await generatePattern(description, setStep, globalKey, onLog)
       const name = inferName(description)
       onAddLane(name, code, description, analysis)
       setDescription('')
@@ -62,11 +62,24 @@ export default function AddLanePanel({ onAddLane, onAddDrumLane }) {
           Drums 🥁
         </button>
         <button
-          disabled
-          className="px-3 py-1.5 rounded-lg text-xs font-mono bg-zinc-800/40 text-zinc-600 cursor-not-allowed"
-          title="Coming soon"
+          onClick={() => setActiveTab('instrument')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
+            activeTab === 'instrument'
+              ? 'bg-violet-600 text-white'
+              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+          }`}
         >
-          Instrument 🎸 <span className="text-zinc-700">· soon</span>
+          Instrument 🎸
+        </button>
+        <button
+          onClick={() => setActiveTab('notegrid')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
+            activeTab === 'notegrid'
+              ? 'bg-violet-600 text-white'
+              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+          }`}
+        >
+          Note Grid 🎹
         </button>
       </div>
 
@@ -115,6 +128,36 @@ export default function AddLanePanel({ onAddLane, onAddDrumLane }) {
             className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors whitespace-nowrap"
           >
             Add drum track
+          </button>
+        </div>
+      )}
+
+      {/* Instrument panel */}
+      {activeTab === 'instrument' && (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-zinc-500">
+            Guitar tab · 6 strings · standard tuning · type frets or chord shorthand (e.g. 022100)
+          </p>
+          <button
+            onClick={() => onAddInstrumentLane(globalKey)}
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors whitespace-nowrap"
+          >
+            Add instrument track
+          </button>
+        </div>
+      )}
+
+      {/* Note grid panel */}
+      {activeTab === 'notegrid' && (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-zinc-500">
+            Piano roll · 2 octaves (C3–B4) · 16 steps · click cells to draw notes
+          </p>
+          <button
+            onClick={onAddNoteGridLane}
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors whitespace-nowrap"
+          >
+            Add note grid
           </button>
         </div>
       )}

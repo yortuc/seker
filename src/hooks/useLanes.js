@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { drumPatternToStrudel, DEFAULT_DRUM_PATTERN } from '../utils/drumPattern'
+import { tabPatternToStrudel, DEFAULT_TAB_PATTERN, defaultChordForRoot } from '../utils/guitarTab'
+import { noteGridToStrudel, DEFAULT_NOTE_GRID, makeEmptyGrid } from '../utils/noteGrid'
 
 const DEFAULT_PARAMS = { gain: 0.8, lpf: 4000, room: 0.2, delay: 0.0 }
 
@@ -108,6 +110,115 @@ export function useLanes() {
     }))
   }
 
+  const addNoteGridLane = () => {
+    const { steps, lowOctave, highOctave, instrument } = DEFAULT_NOTE_GRID
+    const grid = makeEmptyGrid(lowOctave, highOctave, steps)
+    const pattern = { steps, lowOctave, highOctave, instrument, grid }
+    const newLane = {
+      id: uuidv4(),
+      type: 'notegrid',
+      name: 'Melody',
+      emoji: '🎹',
+      pattern,
+      baseCode: noteGridToStrudel(pattern),
+      params: { ...DEFAULT_PARAMS },
+      muted: false,
+      solo: false,
+      orbit: lanes.length
+    }
+    setLanes(prev => [...prev, newLane])
+    return newLane
+  }
+
+  const addInstrumentLane = (globalKey) => {
+    const firstCol = globalKey?.root
+      ? defaultChordForRoot(globalKey.root)
+      : [...DEFAULT_TAB_PATTERN.tab[0]]
+    const pattern = {
+      ...DEFAULT_TAB_PATTERN,
+      tab: DEFAULT_TAB_PATTERN.tab.map((col, i) => i === 0 ? firstCol : [...col])
+    }
+    const newLane = {
+      id: uuidv4(),
+      type: 'instrument',
+      name: 'Guitar',
+      emoji: '🎸',
+      pattern,
+      baseCode: tabPatternToStrudel(pattern),
+      params: { ...DEFAULT_PARAMS },
+      muted: false,
+      solo: false,
+      orbit: lanes.length
+    }
+    setLanes(prev => [...prev, newLane])
+    return newLane
+  }
+
+  const updateTabCell = (id, stepIndex, stringIndex, fret) => {
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const newTab = l.pattern.tab.map((col, si) =>
+        si === stepIndex
+          ? col.map((f, ri) => ri === stringIndex ? fret : f)
+          : col
+      )
+      const newPattern = { ...l.pattern, tab: newTab }
+      return { ...l, pattern: newPattern, baseCode: tabPatternToStrudel(newPattern) }
+    }))
+  }
+
+  const updateTabColumn = (id, stepIndex, frets) => {
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const newTab = l.pattern.tab.map((col, si) => si === stepIndex ? [...frets] : col)
+      const newPattern = { ...l.pattern, tab: newTab }
+      return { ...l, pattern: newPattern, baseCode: tabPatternToStrudel(newPattern) }
+    }))
+  }
+
+  const setNoteGridCell = (id, noteIndex, stepIndex, value) => {
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const newGrid = l.pattern.grid.map((row, ni) =>
+        ni === noteIndex
+          ? row.map((v, si) => si === stepIndex ? value : v)
+          : row
+      )
+      const newPattern = { ...l.pattern, grid: newGrid }
+      return { ...l, pattern: newPattern, baseCode: noteGridToStrudel(newPattern) }
+    }))
+  }
+
+  const toggleNoteGridCell = (id, noteIndex, stepIndex) => {
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const cell = l.pattern.grid[noteIndex]?.[stepIndex] ?? 0
+      const newGrid = l.pattern.grid.map((row, ni) =>
+        ni === noteIndex
+          ? row.map((v, si) => si === stepIndex ? (cell ? 0 : 1) : v)
+          : row
+      )
+      const newPattern = { ...l.pattern, grid: newGrid }
+      return { ...l, pattern: newPattern, baseCode: noteGridToStrudel(newPattern) }
+    }))
+  }
+
+  const updateNoteGridInstrument = (id, instrument) => {
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const newPattern = { ...l.pattern, instrument }
+      return { ...l, pattern: newPattern, baseCode: noteGridToStrudel(newPattern) }
+    }))
+  }
+
+  const updateTabInstrument = (id, instrument) => {
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const newPattern = { ...l.pattern, instrument }
+      return { ...l, pattern: newPattern, baseCode: tabPatternToStrudel(newPattern) }
+    }))
+  }
+
   const removeDrumTrack = (id, trackIndex) => {
     setLanes(prev => prev.map(l => {
       if (l.id !== id || l.pattern.tracks.length <= 1) return l
@@ -130,10 +241,12 @@ export function useLanes() {
 
   return {
     lanes,
-    addLane, addDrumLane, removeLane,
+    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
     updateParam, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack,
+    updateTabCell, updateTabColumn, updateTabInstrument,
+    toggleNoteGridCell, setNoteGridCell, updateNoteGridInstrument,
     loadLanes, clearLanes, applySceneState
   }
 }
