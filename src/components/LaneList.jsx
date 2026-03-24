@@ -5,6 +5,7 @@ export default function LaneList({
   lanes,
   globalKey,
   onLog,
+  generateFn,
   onAddLane,
   onAddDrumLane,
   onAddInstrumentLane,
@@ -40,6 +41,7 @@ export default function LaneList({
           key={lane.id}
           lane={lane}
           onLog={onLog}
+          generateFn={generateFn}
           onRemove={onRemoveLane}
           onUpdateParam={onUpdateParam}
           onUpdateCode={onUpdateCode}
@@ -61,6 +63,7 @@ export default function LaneList({
       <AddLanePanel
         globalKey={globalKey}
         onLog={onLog}
+        generateFn={generateFn}
         onAddLane={onAddLane}
         onAddDrumLane={onAddDrumLane}
         onAddInstrumentLane={onAddInstrumentLane}

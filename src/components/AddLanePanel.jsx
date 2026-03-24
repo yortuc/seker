@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { generatePattern } from '../utils/claude'
 
-export default function AddLanePanel({ globalKey, onLog, onAddLane, onAddDrumLane, onAddInstrumentLane, onAddNoteGridLane }) {
+export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, onAddDrumLane, onAddInstrumentLane, onAddNoteGridLane }) {
   const [activeTab, setActiveTab] = useState('strudel')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,7 +24,7 @@ export default function AddLanePanel({ globalKey, onLog, onAddLane, onAddDrumLan
     setStep('')
     setError(null)
     try {
-      const { code, analysis } = await generatePattern(description, setStep, globalKey, onLog)
+      const { code, analysis } = await generateFn(description, setStep, globalKey, onLog)
       const name = inferName(description)
       onAddLane(name, code, description, analysis)
       setDescription('')

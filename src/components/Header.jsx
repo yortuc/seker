@@ -5,7 +5,7 @@ const SCALE_GROUPS = [
   { label: 'Western', scales: ['major', 'minor', 'dorian', 'phrygian', 'mixolydian', 'harmonic minor', 'pentatonic'] },
 ]
 
-export default function Header({ isPlaying, isInitializing, bpm, globalLpf, globalKey, onPlay, onStop, onBpmChange, onGlobalLpfChange, onGlobalKeyChange, onNew, hasLanes }) {
+export default function Header({ isPlaying, isInitializing, bpm, globalLpf, globalKey, onPlay, onStop, onBpmChange, onGlobalLpfChange, onGlobalKeyChange, onNew, hasLanes, localMode, localModelProgress, webGPUAvailable, onToggleLocalMode }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = () => {
@@ -96,6 +96,34 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
         </div>
 
         <div className="ml-auto flex items-center gap-2">
+          {webGPUAvailable && (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={onToggleLocalMode}
+                title={localMode ? 'Switch to cloud AI (Claude)' : 'Switch to local AI (Qwen2.5-Coder in browser)'}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 ${
+                  localMode
+                    ? 'border-emerald-700 bg-emerald-900/40 text-emerald-400 hover:bg-emerald-900/60'
+                    : 'border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:border-zinc-500'
+                }`}
+              >
+                {localMode ? '⚡ Local AI' : '☁ Cloud AI'}
+              </button>
+              {localMode && localModelProgress && localModelProgress.progress < 1 && (
+                <div className="flex items-center gap-1.5">
+                  <div className="w-16 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-500 transition-all"
+                      style={{ width: `${Math.round(localModelProgress.progress * 100)}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-zinc-500 whitespace-nowrap">
+                    {Math.round(localModelProgress.progress * 100)}%
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           {hasLanes && (
             <button
               onClick={onNew}

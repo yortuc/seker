@@ -3,11 +3,11 @@ import ParamSlider from './ParamSlider'
 import DrumLane from './DrumLane'
 import GuitarTabLane from './GuitarTabLane'
 import NoteGridLane from './NoteGridLane'
-import { generatePattern } from '../utils/claude'
 
 export default function Lane({
   lane,
   onLog,
+  generateFn,
   onRemove,
   onUpdateParam,
   onUpdateCode,
@@ -59,7 +59,7 @@ export default function Lane({
     setRegenStep('')
     setRegenError(null)
     try {
-      const { code: newCode, analysis } = await generatePattern(prompt, setRegenStep, null, onLog)
+      const { code: newCode, analysis } = await generateFn(prompt, setRegenStep, null, onLog)
       onUpdatePromptAndCode(lane.id, prompt, newCode, analysis)
       setCodeValue(newCode)
       setEditingPrompt(false)

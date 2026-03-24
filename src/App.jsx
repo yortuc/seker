@@ -3,6 +3,8 @@ import { useLanes } from './hooks/useLanes'
 import { useStrudel } from './hooks/useStrudel'
 import { buildEvalCode } from './utils/strudel'
 import { readUrlState, writeUrlState } from './utils/urlState'
+import { generatePattern } from './utils/claude'
+import { generatePatternLocal, isWebGPUAvailable, unloadEngine } from './utils/webllm.js'
 import Header from './components/Header'
 import LaneList from './components/LaneList'
 import SceneBar from './components/SceneBar'
@@ -14,6 +16,20 @@ export default function App() {
   const [globalKey, setGlobalKey] = useState({ root: 'C', scale: 'minor' })
   const [scenes, setScenes] = useState([])
   const [genLog, setGenLog] = useState([])
+  const [localMode, setLocalMode] = useState(false)
+  const [localModelProgress, setLocalModelProgress] = useState(null) // { text, progress }
+
+  const generateFn = localMode
+    ? (desc, onStep, key, onLog) => generatePatternLocal(desc, onStep, key, (text, progress) => setLocalModelProgress({ text, progress }))
+    : generatePattern
+
+  const handleToggleLocalMode = () => {
+    if (localMode) {
+      unloadEngine()
+      setLocalModelProgress(null)
+    }
+    setLocalMode(v => !v)
+  }
 
   const handleLog = (type, sessionId, data) => {
     setGenLog(prev => {
@@ -141,6 +157,10 @@ export default function App() {
         onGlobalKeyChange={setGlobalKey}
         onNew={handleNew}
         hasLanes={lanes.length > 0}
+        localMode={localMode}
+        localModelProgress={localModelProgress}
+        webGPUAvailable={isWebGPUAvailable()}
+        onToggleLocalMode={handleToggleLocalMode}
       />
 
       {error && (
@@ -164,6 +184,7 @@ export default function App() {
           <LaneList
             lanes={lanes}
             globalKey={globalKey}
+        generateFn={generateFn}
         onAddLane={addLane}
         onAddDrumLane={addDrumLane}
         onAddInstrumentLane={addInstrumentLane}
