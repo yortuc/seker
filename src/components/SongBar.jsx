@@ -31,7 +31,7 @@ export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, o
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3">
+    <div className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3 relative">
       {/* Editable song title */}
       {editingTitle ? (
         <input
@@ -43,13 +43,13 @@ export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, o
             if (e.key === 'Enter') commitTitle()
             if (e.key === 'Escape') { setTitleValue(title); setEditingTitle(false) }
           }}
-          className="flex-1 bg-transparent border-b border-violet-500 text-zinc-100 text-lg font-semibold font-mono focus:outline-none pb-0.5"
+          className="absolute left-1/2 -translate-x-1/2 w-64 bg-transparent border-b border-violet-500 text-zinc-100 text-lg font-semibold font-mono focus:outline-none pb-0.5 text-center"
           autoFocus
         />
       ) : (
         <button
           onClick={() => setEditingTitle(true)}
-          className="flex items-center gap-2 group"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 group"
           title="Click to rename"
         >
           <span className="text-lg font-semibold font-mono text-zinc-100 group-hover:text-white transition-colors">
