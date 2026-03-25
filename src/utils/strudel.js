@@ -1,3 +1,5 @@
+import { buildEffectsChain, migrateParams } from './effects.js'
+
 export function buildEvalCode(lanes, bpm, globalLpf = 8000, vizType = null) {
   const activeLanes = lanes.filter(l => !l.muted)
   const soloLanes = activeLanes.filter(l => l.solo)
@@ -14,10 +16,7 @@ export function buildEvalCode(lanes, bpm, globalLpf = 8000, vizType = null) {
 
   const lanelines = toPlay.map(lane =>
     `$: ${lane.baseCode}` +
-    `.gain(${lane.params.gain.toFixed(2)})` +
-    `.lpf(${Math.min(Math.round(globalLpf), Math.round(lane.params.lpf))})` +
-    `.room(${lane.params.room.toFixed(2)})` +
-    `.delay(${lane.params.delay.toFixed(2)})` +
+    buildEffectsChain(migrateParams(lane.params), globalLpf) +
     `.orbit(${lane.orbit})` +
     analyzeClause
   ).join('\n')

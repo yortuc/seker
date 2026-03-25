@@ -13,6 +13,8 @@ export default function LaneList({
   onAddNoteGridLane,
   onRemoveLane,
   onUpdateParam,
+  onAddEffect,
+  onRemoveEffect,
   onUpdateCode,
   onUpdatePromptAndCode,
   onToggleMute,
@@ -47,6 +49,8 @@ export default function LaneList({
           generateFn={generateFn}
           onRemove={onRemoveLane}
           onUpdateParam={onUpdateParam}
+          onAddEffect={onAddEffect}
+          onRemoveEffect={onRemoveEffect}
           onUpdateCode={onUpdateCode}
           onUpdatePromptAndCode={onUpdatePromptAndCode}
           onToggleMute={onToggleMute}

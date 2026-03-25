@@ -55,7 +55,7 @@ export default function App() {
   const {
     lanes,
     addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
-    updateParam, updateCode, updatePromptAndCode,
+    updateParam, addEffect, removeEffect, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack, applyDrumKit,
     updateTabCell, updateTabColumn, updateTabInstrument,
@@ -230,6 +230,8 @@ export default function App() {
         onAddNoteGridLane={addNoteGridLane}
         onRemoveLane={removeLane}
         onUpdateParam={updateParam}
+        onAddEffect={addEffect}
+        onRemoveEffect={removeEffect}
         onUpdateCode={updateCode}
         onUpdatePromptAndCode={updatePromptAndCode}
         onToggleMute={toggleMute}

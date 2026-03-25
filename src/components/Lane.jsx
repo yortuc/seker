@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react'
-import ParamSlider from './ParamSlider'
 import DrumLane from './DrumLane'
 import GuitarTabLane from './GuitarTabLane'
 import NoteGridLane from './NoteGridLane'
+import FxPanel from './FxPanel'
 import { usePlayhead } from '../hooks/usePlayhead'
 
 export default function Lane({
@@ -12,6 +12,8 @@ export default function Lane({
   generateFn,
   onRemove,
   onUpdateParam,
+  onAddEffect,
+  onRemoveEffect,
   onUpdateCode,
   onUpdatePromptAndCode,
   onToggleMute,
@@ -293,14 +295,15 @@ export default function Lane({
         </div>
       )}
 
-      {/* Param sliders — hidden when collapsed */}
+      {/* FX panel — hidden when collapsed */}
       {!collapsed && (
-        <div className="grid grid-cols-4 gap-4 mt-3 pt-3 border-t border-zinc-800">
-          <ParamSlider label="gain" value={lane.params.gain} min={0} max={1} step={0.01} onChange={v => onUpdateParam(lane.id, 'gain', v)} />
-          <ParamSlider label="lpf" value={lane.params.lpf} min={200} max={8000} step={10} format={v => `${Math.round(v)}Hz`} onChange={v => onUpdateParam(lane.id, 'lpf', v)} />
-          <ParamSlider label="room" value={lane.params.room} min={0} max={1} step={0.01} onChange={v => onUpdateParam(lane.id, 'room', v)} />
-          <ParamSlider label="delay" value={lane.params.delay} min={0} max={0.8} step={0.01} onChange={v => onUpdateParam(lane.id, 'delay', v)} />
-        </div>
+        <FxPanel
+          laneId={lane.id}
+          params={lane.params}
+          onUpdateParam={onUpdateParam}
+          onAddEffect={onAddEffect}
+          onRemoveEffect={onRemoveEffect}
+        />
       )}
     </div>
   )

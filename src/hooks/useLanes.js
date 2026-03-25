@@ -3,8 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { drumPatternToStrudel, DEFAULT_DRUM_PATTERN, DRUM_KITS } from '../utils/drumPattern'
 import { tabPatternToStrudel, DEFAULT_TAB_PATTERN, defaultChordForRoot } from '../utils/guitarTab'
 import { noteGridToStrudel, DEFAULT_NOTE_GRID, makeEmptyGrid } from '../utils/noteGrid'
-
-const DEFAULT_PARAMS = { gain: 0.8, lpf: 4000, room: 0.2, delay: 0.0 }
+import { DEFAULT_EFFECTS, EFFECT_DEFS, migrateParams } from '../utils/effects'
 
 const EMOJI_MAP = {
   drum: '🥁', bass: '🎸', chord: '🎹', melody: '🎵',
@@ -31,7 +30,7 @@ export function useLanes() {
       prompt,
       analysis,
       baseCode,
-      params: { ...DEFAULT_PARAMS },
+      params: DEFAULT_EFFECTS.map(e => ({ ...e })),
       muted: false,
       solo: false,
       orbit: lanes.length
@@ -71,7 +70,7 @@ export function useLanes() {
       emoji: '🥁',
       pattern,
       baseCode: drumPatternToStrudel(pattern),
-      params: { ...DEFAULT_PARAMS },
+      params: DEFAULT_EFFECTS.map(e => ({ ...e })),
       muted: false,
       solo: false,
       orbit: lanes.length
@@ -82,9 +81,29 @@ export function useLanes() {
 
   const removeLane = (id) => setLanes(prev => prev.filter(l => l.id !== id))
 
-  const updateParam = (id, paramKey, value) => {
+  const updateParam = (id, effectType, value) => {
     setLanes(prev => prev.map(l =>
-      l.id === id ? { ...l, params: { ...l.params, [paramKey]: value } } : l
+      l.id !== id ? l : {
+        ...l,
+        params: migrateParams(l.params).map(p => p.type === effectType ? { ...p, value } : p)
+      }
+    ))
+  }
+
+  const addEffect = (id, effectType) => {
+    const def = EFFECT_DEFS[effectType]
+    if (!def) return
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const params = migrateParams(l.params)
+      if (params.some(p => p.type === effectType)) return l
+      return { ...l, params: [...params, { type: effectType, value: def.default }] }
+    }))
+  }
+
+  const removeEffect = (id, effectType) => {
+    setLanes(prev => prev.map(l =>
+      l.id !== id ? l : { ...l, params: migrateParams(l.params).filter(p => p.type !== effectType) }
     ))
   }
 
@@ -137,7 +156,7 @@ export function useLanes() {
       emoji: '🎹',
       pattern,
       baseCode: noteGridToStrudel(pattern),
-      params: { ...DEFAULT_PARAMS },
+      params: DEFAULT_EFFECTS.map(e => ({ ...e })),
       muted: false,
       solo: false,
       orbit: lanes.length
@@ -161,7 +180,7 @@ export function useLanes() {
       emoji: '🎸',
       pattern,
       baseCode: tabPatternToStrudel(pattern),
-      params: { ...DEFAULT_PARAMS },
+      params: DEFAULT_EFFECTS.map(e => ({ ...e })),
       muted: false,
       solo: false,
       orbit: lanes.length
@@ -251,14 +270,14 @@ export function useLanes() {
     setLanes(prev => prev.map(l => {
       const s = laneStates[l.id]
       if (!s) return l
-      return { ...l, muted: s.muted, solo: s.solo, params: { ...l.params, ...s.params } }
+      return { ...l, muted: s.muted, solo: s.solo, params: migrateParams(s.params) }
     }))
   }
 
   return {
     lanes,
     addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
-    updateParam, updateCode, updatePromptAndCode,
+    updateParam, addEffect, removeEffect, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack, applyDrumKit,
     updateTabCell, updateTabColumn, updateTabInstrument,
