@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { relativeTime } from '../utils/songs'
 
-export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, onDelete }) {
+export default function SongBar({ title, songs, isPlaying, onTitleChange, onSave, onLoad, onDelete }) {
   const [editingTitle, setEditingTitle] = useState(false)
   const [titleValue, setTitleValue] = useState(title)
   const [panelOpen, setPanelOpen] = useState(false)
@@ -58,7 +58,7 @@ export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, o
       <canvas
         ref={canvasRef}
         id="strudel-viz-canvas"
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
+        className={`absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500 ${isPlaying ? 'opacity-40' : 'opacity-0'}`}
         style={{ display: 'block' }}
       />
       {/* Editable song title */}

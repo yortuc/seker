@@ -200,6 +200,7 @@ export default function App() {
       <SongBar
         title={songTitle}
         songs={songs}
+        isPlaying={isPlaying}
         onTitleChange={setSongTitle}
         onSave={handleSaveSong}
         onLoad={handleLoadSong}
