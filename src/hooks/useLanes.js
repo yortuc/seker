@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { drumPatternToStrudel, DEFAULT_DRUM_PATTERN } from '../utils/drumPattern'
+import { drumPatternToStrudel, DEFAULT_DRUM_PATTERN, DRUM_KITS } from '../utils/drumPattern'
 import { tabPatternToStrudel, DEFAULT_TAB_PATTERN, defaultChordForRoot } from '../utils/guitarTab'
 import { noteGridToStrudel, DEFAULT_NOTE_GRID, makeEmptyGrid } from '../utils/noteGrid'
 
@@ -40,9 +40,25 @@ export function useLanes() {
     return newLane
   }
 
+  const applyDrumKit = (id, kitId) => {
+    const kit = DRUM_KITS.find(k => k.id === kitId)
+    if (!kit) return
+    setLanes(prev => prev.map(l => {
+      if (l.id !== id) return l
+      const newTracks = l.pattern.tracks.map(t => {
+        const baseName = t.sound.split(':')[0]
+        const newSound = kit.sounds[baseName] ?? t.sound
+        return { ...t, sound: newSound }
+      })
+      const newPattern = { ...l.pattern, tracks: newTracks, kitId }
+      return { ...l, pattern: newPattern, baseCode: drumPatternToStrudel(newPattern) }
+    }))
+  }
+
   const addDrumLane = () => {
     const pattern = {
       steps: DEFAULT_DRUM_PATTERN.steps,
+      kitId: DEFAULT_DRUM_PATTERN.kitId,
       tracks: DEFAULT_DRUM_PATTERN.tracks.map(t => ({
         sound: t.sound,
         steps: [...t.steps]   // deep copy — each lane must own its arrays
@@ -244,7 +260,7 @@ export function useLanes() {
     addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
     updateParam, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
-    toggleDrumStep, addDrumTrack, removeDrumTrack,
+    toggleDrumStep, addDrumTrack, removeDrumTrack, applyDrumKit,
     updateTabCell, updateTabColumn, updateTabInstrument,
     toggleNoteGridCell, setNoteGridCell, updateNoteGridInstrument,
     loadLanes, clearLanes, applySceneState

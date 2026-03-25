@@ -1,15 +1,33 @@
 import { useState } from 'react'
-import { ALL_DRUM_SOUNDS } from '../utils/drumPattern'
+import { ALL_DRUM_SOUNDS, DRUM_KITS } from '../utils/drumPattern'
 
-export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, onRemoveTrack }) {
+export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, onRemoveTrack, onApplyKit }) {
   const [showSoundPicker, setShowSoundPicker] = useState(false)
   const { pattern } = lane
+  const activeKitId = pattern.kitId ?? 'standard'
 
   const usedSounds = pattern.tracks.map(t => t.sound)
   const availableSounds = ALL_DRUM_SOUNDS.filter(s => !usedSounds.includes(s))
 
   return (
     <div className="flex-1 min-w-0">
+      {/* Kit selector */}
+      <div className="flex items-center gap-1 mb-2">
+        {DRUM_KITS.map(kit => (
+          <button
+            key={kit.id}
+            onClick={() => onApplyKit(lane.id, kit.id)}
+            className={`px-2 py-0.5 rounded text-xs font-mono transition-colors border ${
+              activeKitId === kit.id
+                ? 'bg-violet-900/40 border-violet-700 text-violet-300'
+                : 'bg-transparent border-zinc-700 text-zinc-600 hover:text-zinc-300 hover:border-zinc-500'
+            }`}
+          >
+            {kit.name}
+          </button>
+        ))}
+      </div>
+
       <div className="flex flex-col gap-1">
         {pattern.tracks.map((track, trackIndex) => (
           <div key={track.sound} className="flex items-center gap-2 group/track">
