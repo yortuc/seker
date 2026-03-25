@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import { ALL_DRUM_SOUNDS } from '../utils/drumPattern'
-import { usePlayhead } from '../hooks/usePlayhead'
 
-export default function DrumLane({ lane, isPlaying, onToggleStep, onAddTrack, onRemoveTrack }) {
+export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, onRemoveTrack }) {
   const [showSoundPicker, setShowSoundPicker] = useState(false)
   const { pattern } = lane
-  const currentStep = usePlayhead(isPlaying, pattern.steps)
 
   const usedSounds = pattern.tracks.map(t => t.sound)
   const availableSounds = ALL_DRUM_SOUNDS.filter(s => !usedSounds.includes(s))

@@ -3,6 +3,7 @@ import ParamSlider from './ParamSlider'
 import DrumLane from './DrumLane'
 import GuitarTabLane from './GuitarTabLane'
 import NoteGridLane from './NoteGridLane'
+import { usePlayhead } from '../hooks/usePlayhead'
 
 export default function Lane({
   lane,
@@ -25,6 +26,7 @@ export default function Lane({
   onSetNoteGridCell,
   onUpdateNoteGridInstrument,
 }) {
+  const [collapsed, setCollapsed] = useState(false)
   const [editingName, setEditingName] = useState(false)
   const [editingCode, setEditingCode] = useState(false)
   const [editingPrompt, setEditingPrompt] = useState(false)
@@ -37,6 +39,27 @@ export default function Lane({
   const codeDebounce = useRef(null)
 
   const laneType = lane.type ?? 'strudel'
+
+  // Step metadata for collapsed beat strip
+  const numSteps = laneType === 'drum' ? lane.pattern.steps
+    : laneType === 'notegrid' ? lane.pattern.steps
+    : 16
+
+  const activeSteps = (() => {
+    if (laneType === 'drum') {
+      return Array.from({ length: numSteps }, (_, i) =>
+        lane.pattern.tracks.some(t => t.steps[i])
+      )
+    }
+    if (laneType === 'notegrid') {
+      return Array.from({ length: numSteps }, (_, i) =>
+        lane.pattern.grid?.some(row => row[i])
+      )
+    }
+    return Array(numSteps).fill(false)
+  })()
+
+  const currentStep = usePlayhead(isPlaying, numSteps)
 
   // Sync codeValue when baseCode changes externally (URL hydration) — strudel only
   const prevBaseCode = useRef(lane.baseCode)
@@ -79,10 +102,17 @@ export default function Lane({
     <div className={`bg-zinc-900 border border-zinc-800 rounded-xl p-4 transition-opacity ${isMuted ? 'opacity-50' : ''}`}>
       <div className="flex items-start gap-3">
 
-        {/* Left: emoji + name */}
+        {/* Left: emoji + name + collapse toggle */}
         <div className="flex items-center gap-2 min-w-0 flex-shrink-0">
+          <button
+            onClick={() => setCollapsed(v => !v)}
+            className="text-zinc-600 hover:text-zinc-300 transition-colors text-xs leading-none flex-shrink-0"
+            title={collapsed ? 'Expand' : 'Collapse'}
+          >
+            {collapsed ? '▶' : '▼'}
+          </button>
           <span className="text-2xl select-none">{lane.emoji}</span>
-          {editingName ? (
+          {editingName && !collapsed ? (
             <input
               value={nameValue}
               onChange={e => setNameValue(e.target.value)}
@@ -93,20 +123,39 @@ export default function Lane({
             />
           ) : (
             <button
-              onClick={() => setEditingName(true)}
+              onClick={() => !collapsed && setEditingName(true)}
               className="text-sm font-medium text-zinc-300 hover:text-zinc-100 transition-colors text-left truncate max-w-24"
-              title="Click to edit name"
+              title={collapsed ? undefined : 'Click to edit name'}
             >
               {lane.name}
             </button>
           )}
         </div>
 
-        {/* Center: type-specific content */}
-        {laneType === 'drum' ? (
+        {/* Center: collapsed beat strip or expanded type-specific content */}
+        {collapsed ? (
+          <div className="flex-1 flex items-center gap-px min-w-0">
+            {Array.from({ length: numSteps }, (_, i) => {
+              const isCurrentStep = i === currentStep
+              const hasActivity = activeSteps[i]
+              return (
+                <div
+                  key={i}
+                  className={`flex-1 h-5 rounded-sm transition-colors ${
+                    i > 0 && i % 4 === 0 ? 'ml-0.5' : ''
+                  } ${
+                    hasActivity
+                      ? isCurrentStep ? 'bg-white' : 'bg-violet-700'
+                      : isCurrentStep ? 'bg-zinc-600' : 'bg-zinc-800'
+                  }`}
+                />
+              )
+            })}
+          </div>
+        ) : laneType === 'drum' ? (
           <DrumLane
             lane={lane}
-            isPlaying={isPlaying}
+            currentStep={currentStep}
             onToggleStep={onToggleDrumStep}
             onAddTrack={onAddDrumTrack}
             onRemoveTrack={onRemoveDrumTrack}
@@ -121,7 +170,7 @@ export default function Lane({
         ) : laneType === 'notegrid' ? (
           <NoteGridLane
             lane={lane}
-            isPlaying={isPlaying}
+            currentStep={currentStep}
             onToggleCell={onToggleNoteGridCell}
             onSetCell={onSetNoteGridCell}
             onChangeInstrument={onUpdateNoteGridInstrument}
@@ -183,8 +232,8 @@ export default function Lane({
         </div>
       </div>
 
-      {/* Prompt / analysis row — strudel only */}
-      {(laneType === 'strudel' || laneType == null) && (
+      {/* Prompt / analysis row — strudel only, hidden when collapsed */}
+      {!collapsed && (laneType === 'strudel' || laneType == null) && (
         <div className="mt-2">
           {editingPrompt ? (
             <div className="flex gap-2 items-center">
@@ -242,13 +291,15 @@ export default function Lane({
         </div>
       )}
 
-      {/* Param sliders — shared */}
-      <div className="grid grid-cols-4 gap-4 mt-3 pt-3 border-t border-zinc-800">
-        <ParamSlider label="gain" value={lane.params.gain} min={0} max={1} step={0.01} onChange={v => onUpdateParam(lane.id, 'gain', v)} />
-        <ParamSlider label="lpf" value={lane.params.lpf} min={200} max={8000} step={10} format={v => `${Math.round(v)}Hz`} onChange={v => onUpdateParam(lane.id, 'lpf', v)} />
-        <ParamSlider label="room" value={lane.params.room} min={0} max={1} step={0.01} onChange={v => onUpdateParam(lane.id, 'room', v)} />
-        <ParamSlider label="delay" value={lane.params.delay} min={0} max={0.8} step={0.01} onChange={v => onUpdateParam(lane.id, 'delay', v)} />
-      </div>
+      {/* Param sliders — hidden when collapsed */}
+      {!collapsed && (
+        <div className="grid grid-cols-4 gap-4 mt-3 pt-3 border-t border-zinc-800">
+          <ParamSlider label="gain" value={lane.params.gain} min={0} max={1} step={0.01} onChange={v => onUpdateParam(lane.id, 'gain', v)} />
+          <ParamSlider label="lpf" value={lane.params.lpf} min={200} max={8000} step={10} format={v => `${Math.round(v)}Hz`} onChange={v => onUpdateParam(lane.id, 'lpf', v)} />
+          <ParamSlider label="room" value={lane.params.room} min={0} max={1} step={0.01} onChange={v => onUpdateParam(lane.id, 'room', v)} />
+          <ParamSlider label="delay" value={lane.params.delay} min={0} max={0.8} step={0.01} onChange={v => onUpdateParam(lane.id, 'delay', v)} />
+        </div>
+      )}
     </div>
   )
 }

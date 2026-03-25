@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { buildNotes, noteLabel, isOctaveRoot, MELODY_INSTRUMENTS } from '../utils/noteGrid'
-import { usePlayhead } from '../hooks/usePlayhead'
 
 const BASE_CELL_W = 18   // px at zoom 1
 const BASE_CELL_H = 11   // px at zoom 1
@@ -9,10 +8,9 @@ const MIN_ZOOM = 0.5
 const MAX_ZOOM = 4
 const ZOOM_STEP = 0.25
 
-export default function NoteGridLane({ lane, isPlaying, onToggleCell, onSetCell, onChangeInstrument }) {
+export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCell, onChangeInstrument }) {
   const { pattern } = lane
   const notes = buildNotes(pattern.lowOctave, pattern.highOctave)
-  const currentStep = usePlayhead(isPlaying, pattern.steps)
   const [showInstruments, setShowInstruments] = useState(false)
   const [zoom, setZoom] = useState(1.5)
   const paintRef = useRef(null) // { value: 0|1 } while dragging
