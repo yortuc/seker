@@ -53,7 +53,7 @@ export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, o
   }
 
   return (
-    <div ref={containerRef} className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3 relative overflow-hidden">
+    <div ref={containerRef} className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3 relative">
       {/* Background visualizer canvas */}
       <canvas
         ref={canvasRef}
