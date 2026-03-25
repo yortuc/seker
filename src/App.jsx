@@ -9,7 +9,6 @@ import Header from './components/Header'
 import LaneList from './components/LaneList'
 import SceneBar from './components/SceneBar'
 import GenLog from './components/GenLog'
-import VizPanel from './components/VizPanel'
 import SongBar from './components/SongBar'
 import { generateSongName, loadSongs, saveSong, deleteSong } from './utils/songs'
 
@@ -206,8 +205,6 @@ export default function App() {
         onLoad={handleLoadSong}
         onDelete={handleDeleteSong}
       />
-
-      <VizPanel />
 
       <SceneBar
         scenes={scenes}

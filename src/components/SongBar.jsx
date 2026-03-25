@@ -7,9 +7,31 @@ export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, o
   const [panelOpen, setPanelOpen] = useState(false)
   const panelRef = useRef(null)
   const inputRef = useRef(null)
+  const canvasRef = useRef(null)
+  const containerRef = useRef(null)
 
   // Keep local value in sync if title changes externally (e.g. song load)
   useEffect(() => { setTitleValue(title) }, [title])
+
+  // Resize canvas to match container
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const container = containerRef.current
+    if (!canvas || !container) return
+    const updateSize = () => {
+      const w = container.offsetWidth
+      const h = container.offsetHeight
+      if (w > 0 && h > 0) {
+        const dpr = window.devicePixelRatio || 1
+        canvas.width = w * dpr
+        canvas.height = h * dpr
+      }
+    }
+    updateSize()
+    const ro = new ResizeObserver(updateSize)
+    ro.observe(container)
+    return () => ro.disconnect()
+  }, [])
 
   // Close panel on outside click
   useEffect(() => {
@@ -31,7 +53,14 @@ export default function SongBar({ title, songs, onTitleChange, onSave, onLoad, o
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3 relative">
+    <div ref={containerRef} className="max-w-5xl mx-auto px-4 py-2 flex items-center gap-3 relative overflow-hidden">
+      {/* Background visualizer canvas */}
+      <canvas
+        ref={canvasRef}
+        id="strudel-viz-canvas"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
+        style={{ display: 'block' }}
+      />
       {/* Editable song title */}
       {editingTitle ? (
         <input
