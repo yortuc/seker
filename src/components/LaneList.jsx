@@ -4,6 +4,7 @@ import AddLanePanel from './AddLanePanel'
 export default function LaneList({
   lanes,
   globalKey,
+  isPlaying,
   onLog,
   generateFn,
   onAddLane,
@@ -40,6 +41,7 @@ export default function LaneList({
         <Lane
           key={lane.id}
           lane={lane}
+          isPlaying={isPlaying}
           onLog={onLog}
           generateFn={generateFn}
           onRemove={onRemoveLane}

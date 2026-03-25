@@ -9,6 +9,7 @@ import Header from './components/Header'
 import LaneList from './components/LaneList'
 import SceneBar from './components/SceneBar'
 import GenLog from './components/GenLog'
+import VizPanel from './components/VizPanel'
 
 export default function App() {
   const [bpm, setBpm] = useState(120)
@@ -17,6 +18,7 @@ export default function App() {
   const [scenes, setScenes] = useState([])
   const [genLog, setGenLog] = useState([])
   const [localMode, setLocalMode] = useState(false)
+  const [vizType, setVizType] = useState('scope')
   const [localModelProgress, setLocalModelProgress] = useState(null) // { text, progress }
 
   const generateFn = localMode
@@ -84,9 +86,9 @@ export default function App() {
 
   useEffect(() => {
     if (!isPlaying) return
-    const code = buildEvalCode(lanes, bpm, globalLpf)
+    const code = buildEvalCode(lanes, bpm, globalLpf, vizType)
     debouncedPlay(code)
-  }, [lanes, bpm, globalLpf, isPlaying])
+  }, [lanes, bpm, globalLpf, isPlaying, vizType])
 
   // Keyboard: 1-9 switch scenes
   useEffect(() => {
@@ -103,7 +105,7 @@ export default function App() {
   }, [scenes])
 
   const handlePlay = async () => {
-    await play(buildEvalCode(lanes, bpm, globalLpf))
+    await play(buildEvalCode(lanes, bpm, globalLpf, vizType))
   }
 
   const handleNew = () => {
@@ -171,6 +173,8 @@ export default function App() {
         </div>
       )}
 
+      <VizPanel vizType={vizType} onVizTypeChange={setVizType} />
+
       <SceneBar
         scenes={scenes}
         hasLanes={lanes.length > 0}
@@ -184,6 +188,7 @@ export default function App() {
           <LaneList
             lanes={lanes}
             globalKey={globalKey}
+            isPlaying={isPlaying}
         generateFn={generateFn}
         onAddLane={addLane}
         onAddDrumLane={addDrumLane}

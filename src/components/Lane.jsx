@@ -6,6 +6,7 @@ import NoteGridLane from './NoteGridLane'
 
 export default function Lane({
   lane,
+  isPlaying,
   onLog,
   generateFn,
   onRemove,
@@ -105,6 +106,7 @@ export default function Lane({
         {laneType === 'drum' ? (
           <DrumLane
             lane={lane}
+            isPlaying={isPlaying}
             onToggleStep={onToggleDrumStep}
             onAddTrack={onAddDrumTrack}
             onRemoveTrack={onRemoveDrumTrack}
@@ -119,6 +121,7 @@ export default function Lane({
         ) : laneType === 'notegrid' ? (
           <NoteGridLane
             lane={lane}
+            isPlaying={isPlaying}
             onToggleCell={onToggleNoteGridCell}
             onSetCell={onSetNoteGridCell}
             onChangeInstrument={onUpdateNoteGridInstrument}

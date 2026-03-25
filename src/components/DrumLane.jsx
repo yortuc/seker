@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { ALL_DRUM_SOUNDS } from '../utils/drumPattern'
+import { usePlayhead } from '../hooks/usePlayhead'
 
-export default function DrumLane({ lane, onToggleStep, onAddTrack, onRemoveTrack }) {
+export default function DrumLane({ lane, isPlaying, onToggleStep, onAddTrack, onRemoveTrack }) {
   const [showSoundPicker, setShowSoundPicker] = useState(false)
   const { pattern } = lane
+  const currentStep = usePlayhead(isPlaying, pattern.steps)
 
   const usedSounds = pattern.tracks.map(t => t.sound)
   const availableSounds = ALL_DRUM_SOUNDS.filter(s => !usedSounds.includes(s))
@@ -20,19 +22,26 @@ export default function DrumLane({ lane, onToggleStep, onAddTrack, onRemoveTrack
 
             {/* Steps — grouped visually in sets of 4 */}
             <div className="flex gap-0.5">
-              {track.steps.map((active, stepIndex) => (
-                <button
-                  key={stepIndex}
-                  onClick={() => onToggleStep(lane.id, trackIndex, stepIndex)}
-                  className={`w-5 h-5 rounded-sm transition-colors flex-shrink-0 ${
-                    stepIndex > 0 && stepIndex % 4 === 0 ? 'ml-1' : ''
-                  } ${
-                    active
-                      ? 'bg-violet-500 hover:bg-violet-400'
-                      : 'bg-zinc-800 hover:bg-zinc-700'
-                  }`}
-                />
-              ))}
+              {track.steps.map((active, stepIndex) => {
+                const isCurrentStep = stepIndex === currentStep
+                return (
+                  <button
+                    key={stepIndex}
+                    onClick={() => onToggleStep(lane.id, trackIndex, stepIndex)}
+                    className={`w-5 h-5 rounded-sm transition-colors flex-shrink-0 ${
+                      stepIndex > 0 && stepIndex % 4 === 0 ? 'ml-1' : ''
+                    } ${
+                      active
+                        ? isCurrentStep
+                          ? 'bg-white'
+                          : 'bg-violet-500 hover:bg-violet-400'
+                        : isCurrentStep
+                        ? 'bg-zinc-600'
+                        : 'bg-zinc-800 hover:bg-zinc-700'
+                    }`}
+                  />
+                )
+              })}
             </div>
 
             {/* Remove row button — hover only, guarded to >1 track */}

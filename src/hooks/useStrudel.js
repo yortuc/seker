@@ -47,6 +47,7 @@ export function useStrudel() {
       const { hush } = await import('@strudel/web')
       hush()
     } catch (_) {}
+    window.__strudelTime = null
     setIsPlaying(false)
   }, [])
 

@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { buildNotes, noteLabel, isOctaveRoot, MELODY_INSTRUMENTS } from '../utils/noteGrid'
+import { usePlayhead } from '../hooks/usePlayhead'
 
 const BASE_CELL_W = 18   // px at zoom 1
 const BASE_CELL_H = 11   // px at zoom 1
@@ -8,9 +9,10 @@ const MIN_ZOOM = 0.5
 const MAX_ZOOM = 4
 const ZOOM_STEP = 0.25
 
-export default function NoteGridLane({ lane, onToggleCell, onSetCell, onChangeInstrument }) {
+export default function NoteGridLane({ lane, isPlaying, onToggleCell, onSetCell, onChangeInstrument }) {
   const { pattern } = lane
   const notes = buildNotes(pattern.lowOctave, pattern.highOctave)
+  const currentStep = usePlayhead(isPlaying, pattern.steps)
   const [showInstruments, setShowInstruments] = useState(false)
   const [zoom, setZoom] = useState(1.5)
   const paintRef = useRef(null) // { value: 0|1 } while dragging
@@ -129,9 +131,9 @@ export default function NoteGridLane({ lane, onToggleCell, onSetCell, onChangeIn
                 {/* Step cells */}
                 {Array.from({ length: pattern.steps }, (_, stepIndex) => {
                   const active = pattern.grid[noteIndex]?.[stepIndex] === 1
-                  // beat group boundaries at 0, 4, 8, 12
                   const isBeatStart = stepIndex % 4 === 0
                   const isLastInGroup = stepIndex % 4 === 3
+                  const isCurrentStep = stepIndex === currentStep
 
                   return (
                     <div
@@ -144,9 +146,13 @@ export default function NoteGridLane({ lane, onToggleCell, onSetCell, onChangeIn
                         isBeatStart && stepIndex > 0 ? 'border-l border-l-zinc-700' : ''
                       } ${
                         active
-                          ? isRoot
+                          ? isCurrentStep
+                            ? 'bg-white'
+                            : isRoot
                             ? 'bg-violet-500 hover:bg-violet-400'
                             : 'bg-emerald-500 hover:bg-emerald-400'
+                          : isCurrentStep
+                          ? isSharp ? 'bg-zinc-700' : 'bg-zinc-800'
                           : isSharp
                           ? 'bg-zinc-900 hover:bg-zinc-800'
                           : 'bg-zinc-950 hover:bg-zinc-900'
