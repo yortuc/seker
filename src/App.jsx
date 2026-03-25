@@ -57,7 +57,7 @@ export default function App() {
     addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
     updateParam, addEffect, removeEffect, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
-    toggleDrumStep, addDrumTrack, removeDrumTrack, applyDrumKit,
+    toggleDrumStep, addDrumTrack, removeDrumTrack,
     updateTabCell, updateTabColumn, updateTabInstrument,
     toggleNoteGridCell, setNoteGridCell, updateNoteGridInstrument,
     loadLanes, clearLanes, applySceneState
@@ -239,7 +239,6 @@ export default function App() {
         onToggleDrumStep={toggleDrumStep}
         onAddDrumTrack={addDrumTrack}
         onRemoveDrumTrack={removeDrumTrack}
-        onApplyDrumKit={applyDrumKit}
         onUpdateTabCell={updateTabCell}
         onUpdateTabColumn={updateTabColumn}
         onUpdateTabInstrument={updateTabInstrument}

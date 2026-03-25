@@ -21,7 +21,6 @@ export default function Lane({
   onToggleDrumStep,
   onAddDrumTrack,
   onRemoveDrumTrack,
-  onApplyDrumKit,
   onUpdateTabCell,
   onUpdateTabColumn,
   onUpdateTabInstrument,
@@ -162,7 +161,6 @@ export default function Lane({
             onToggleStep={onToggleDrumStep}
             onAddTrack={onAddDrumTrack}
             onRemoveTrack={onRemoveDrumTrack}
-            onApplyKit={onApplyDrumKit}
           />
         ) : laneType === 'instrument' ? (
           <GuitarTabLane

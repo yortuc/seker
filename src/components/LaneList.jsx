@@ -22,7 +22,6 @@ export default function LaneList({
   onToggleDrumStep,
   onAddDrumTrack,
   onRemoveDrumTrack,
-  onApplyDrumKit,
   onUpdateTabCell,
   onUpdateTabColumn,
   onUpdateTabInstrument,
@@ -58,7 +57,6 @@ export default function LaneList({
           onToggleDrumStep={onToggleDrumStep}
           onAddDrumTrack={onAddDrumTrack}
           onRemoveDrumTrack={onRemoveDrumTrack}
-          onApplyDrumKit={onApplyDrumKit}
           onUpdateTabCell={onUpdateTabCell}
           onUpdateTabColumn={onUpdateTabColumn}
           onUpdateTabInstrument={onUpdateTabInstrument}
