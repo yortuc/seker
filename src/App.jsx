@@ -20,7 +20,6 @@ export default function App() {
   const [scenes, setScenes] = useState([])
   const [genLog, setGenLog] = useState([])
   const [localMode, setLocalMode] = useState(false)
-  const [vizType, setVizType] = useState('scope')
   const [songTitle, setSongTitle] = useState(generateSongName)
   const [songs, setSongs] = useState(loadSongs)
   const [localModelProgress, setLocalModelProgress] = useState(null) // { text, progress }
@@ -91,9 +90,9 @@ export default function App() {
 
   useEffect(() => {
     if (!isPlaying) return
-    const code = buildEvalCode(lanes, bpm, globalLpf, vizType)
+    const code = buildEvalCode(lanes, bpm, globalLpf, 'scope')
     debouncedPlay(code)
-  }, [lanes, bpm, globalLpf, isPlaying, vizType])
+  }, [lanes, bpm, globalLpf, isPlaying])
 
   // Keyboard: 1-9 switch scenes
   useEffect(() => {
@@ -110,7 +109,7 @@ export default function App() {
   }, [scenes])
 
   const handlePlay = async () => {
-    await play(buildEvalCode(lanes, bpm, globalLpf, vizType))
+    await play(buildEvalCode(lanes, bpm, globalLpf, 'scope'))
   }
 
   const handleNew = () => {
@@ -208,7 +207,7 @@ export default function App() {
         onDelete={handleDeleteSong}
       />
 
-      <VizPanel vizType={vizType} onVizTypeChange={setVizType} />
+      <VizPanel />
 
       <SceneBar
         scenes={scenes}

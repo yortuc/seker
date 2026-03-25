@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-const VIZ_TYPES = ['scope', 'spectrum']
-
-export default function VizPanel({ vizType, onVizTypeChange }) {
+export default function VizPanel() {
   const canvasRef = useRef(null)
   const containerRef = useRef(null)
 
@@ -29,27 +27,9 @@ export default function VizPanel({ vizType, onVizTypeChange }) {
 
   return (
     <div className="max-w-5xl mx-auto px-4">
-      <div className="flex items-center gap-2 py-1.5">
-        <span className="text-xs text-zinc-600">viz</span>
-        {VIZ_TYPES.map(type => (
-          <button
-            key={type}
-            onClick={() => onVizTypeChange(vizType === type ? null : type)}
-            className={`px-2 py-0.5 rounded text-xs font-mono transition-colors border ${
-              vizType === type
-                ? 'bg-violet-900/40 border-violet-700 text-violet-300'
-                : 'bg-transparent border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:border-zinc-500'
-            }`}
-          >
-            {type}
-          </button>
-        ))}
-      </div>
       <div
         ref={containerRef}
-        className={`overflow-hidden rounded-lg transition-all duration-300 ${
-          vizType ? 'h-24 mb-2' : 'h-0'
-        }`}
+        className="h-24 mb-2 overflow-hidden rounded-lg"
       >
         <canvas
           ref={canvasRef}
