@@ -10,6 +10,8 @@ import LaneList from './components/LaneList'
 import SceneBar from './components/SceneBar'
 import GenLog from './components/GenLog'
 import VizPanel from './components/VizPanel'
+import SongBar from './components/SongBar'
+import { generateSongName, loadSongs, saveSong, deleteSong } from './utils/songs'
 
 export default function App() {
   const [bpm, setBpm] = useState(120)
@@ -19,6 +21,8 @@ export default function App() {
   const [genLog, setGenLog] = useState([])
   const [localMode, setLocalMode] = useState(false)
   const [vizType, setVizType] = useState('scope')
+  const [songTitle, setSongTitle] = useState(generateSongName)
+  const [songs, setSongs] = useState(loadSongs)
   const [localModelProgress, setLocalModelProgress] = useState(null) // { text, progress }
 
   const generateFn = localMode
@@ -70,6 +74,7 @@ export default function App() {
       if (saved.globalLpf != null) setGlobalLpf(saved.globalLpf)
       if (saved.globalKey) setGlobalKey(saved.globalKey)
       if (saved.scenes) setScenes(saved.scenes)
+      if (saved.title) setSongTitle(saved.title)
     }
     hydrated.current = true
   }, [])
@@ -81,8 +86,8 @@ export default function App() {
       window.history.replaceState(null, '', window.location.pathname)
       return
     }
-    writeUrlState({ lanes, bpm, globalLpf, globalKey, scenes })
-  }, [lanes, bpm, globalLpf, scenes])
+    writeUrlState({ lanes, bpm, globalLpf, globalKey, scenes, title: songTitle })
+  }, [lanes, bpm, globalLpf, scenes, songTitle])
 
   useEffect(() => {
     if (!isPlaying) return
@@ -115,6 +120,27 @@ export default function App() {
     setGlobalLpf(8000)
     setGlobalKey({ root: 'C', scale: 'minor' })
     setScenes([])
+    setSongTitle(generateSongName())
+  }
+
+  const handleSaveSong = () => {
+    const state = { lanes, bpm, globalLpf, globalKey, scenes, title: songTitle }
+    setSongs(saveSong(songTitle, state))
+  }
+
+  const handleLoadSong = (song) => {
+    stop()
+    const { state } = song
+    if (state.lanes) loadLanes(state.lanes)
+    if (state.bpm) setBpm(state.bpm)
+    if (state.globalLpf != null) setGlobalLpf(state.globalLpf)
+    if (state.globalKey) setGlobalKey(state.globalKey)
+    if (state.scenes) setScenes(state.scenes)
+    setSongTitle(song.name)
+  }
+
+  const handleDeleteSong = (id) => {
+    setSongs(deleteSong(id))
   }
 
   const handleBpmChange = (newBpm) => {
@@ -172,6 +198,15 @@ export default function App() {
           </div>
         </div>
       )}
+
+      <SongBar
+        title={songTitle}
+        songs={songs}
+        onTitleChange={setSongTitle}
+        onSave={handleSaveSong}
+        onLoad={handleLoadSong}
+        onDelete={handleDeleteSong}
+      />
 
       <VizPanel vizType={vizType} onVizTypeChange={setVizType} />
 
