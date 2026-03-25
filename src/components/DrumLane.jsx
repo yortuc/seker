@@ -26,7 +26,7 @@ export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, 
                   <button
                     key={stepIndex}
                     onClick={() => onToggleStep(lane.id, trackIndex, stepIndex)}
-                    className={`w-5 h-5 rounded-sm transition-colors flex-shrink-0 ${
+                    className={`w-6 h-5 rounded-sm transition-colors flex-shrink-0 ${
                       stepIndex > 0 && stepIndex % 4 === 0 ? 'ml-1' : ''
                     } ${
                       active
