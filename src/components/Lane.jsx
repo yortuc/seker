@@ -2,10 +2,8 @@ import { useState, useRef } from 'react'
 import DrumLane from './DrumLane'
 import GuitarTabLane from './GuitarTabLane'
 import NoteGridLane from './NoteGridLane'
-import EuclideanLane from './EuclideanLane'
 import FxPanel from './FxPanel'
 import { usePlayhead } from '../hooks/usePlayhead'
-import { euclidean, rotate } from '../utils/euclidean'
 
 export default function Lane({
   lane,
@@ -29,7 +27,6 @@ export default function Lane({
   onToggleNoteGridCell,
   onSetNoteGridCell,
   onUpdateNoteGridInstrument,
-  onUpdateEuclideanPattern,
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [editingName, setEditingName] = useState(false)
@@ -48,7 +45,6 @@ export default function Lane({
   // Step metadata for collapsed beat strip
   const numSteps = laneType === 'drum' ? lane.pattern.steps
     : laneType === 'notegrid' ? lane.pattern.steps
-    : laneType === 'euclidean' ? lane.pattern.steps
     : 16
 
   const activeSteps = (() => {
@@ -61,9 +57,6 @@ export default function Lane({
       return Array.from({ length: numSteps }, (_, i) =>
         lane.pattern.grid?.some(row => row[i])
       )
-    }
-    if (laneType === 'euclidean') {
-      return rotate(euclidean(lane.pattern.hits, lane.pattern.steps), lane.pattern.rotation)
     }
     return Array(numSteps).fill(false)
   })()
@@ -175,12 +168,6 @@ export default function Lane({
             onUpdateTabCell={onUpdateTabCell}
             onUpdateTabColumn={onUpdateTabColumn}
             onUpdateTabInstrument={onUpdateTabInstrument}
-          />
-        ) : laneType === 'euclidean' ? (
-          <EuclideanLane
-            lane={lane}
-            currentStep={currentStep}
-            onUpdatePattern={onUpdateEuclideanPattern}
           />
         ) : laneType === 'notegrid' ? (
           <NoteGridLane

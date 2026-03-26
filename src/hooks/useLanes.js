@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { drumPatternToStrudel, DEFAULT_DRUM_PATTERN } from '../utils/drumPattern'
 import { tabPatternToStrudel, DEFAULT_TAB_PATTERN, defaultChordForRoot } from '../utils/guitarTab'
 import { noteGridToStrudel, DEFAULT_NOTE_GRID, makeEmptyGrid } from '../utils/noteGrid'
-import { euclideanToStrudel, DEFAULT_EUCLIDEAN } from '../utils/euclidean'
 import { DEFAULT_EFFECTS, EFFECT_DEFS, migrateParams } from '../utils/effects'
 
 const EMOJI_MAP = {
@@ -232,31 +231,6 @@ export function useLanes() {
     }))
   }
 
-  const addEuclideanLane = () => {
-    const pattern = { ...DEFAULT_EUCLIDEAN }
-    const newLane = {
-      id: uuidv4(),
-      type: 'euclidean',
-      name: 'Euclidean',
-      emoji: '⬡',
-      pattern,
-      baseCode: euclideanToStrudel(pattern),
-      params: DEFAULT_EFFECTS.map(e => ({ ...e })),
-      muted: false,
-      solo: false,
-      orbit: lanes.length
-    }
-    setLanes(prev => [...prev, newLane])
-    return newLane
-  }
-
-  const updateEuclideanPattern = (id, pattern) => {
-    setLanes(prev => prev.map(l => {
-      if (l.id !== id) return l
-      return { ...l, pattern, baseCode: euclideanToStrudel(pattern) }
-    }))
-  }
-
   const updateTabInstrument = (id, instrument) => {
     setLanes(prev => prev.map(l => {
       if (l.id !== id) return l
@@ -287,8 +261,7 @@ export function useLanes() {
 
   return {
     lanes,
-    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, addEuclideanLane, removeLane,
-    updateEuclideanPattern,
+    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
     updateParam, addEffect, removeEffect, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack,
