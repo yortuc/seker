@@ -72,7 +72,7 @@ export default function SongBar({ title, songs, isPlaying, onTitleChange, onSave
             if (e.key === 'Enter') commitTitle()
             if (e.key === 'Escape') { setTitleValue(title); setEditingTitle(false) }
           }}
-          className="absolute left-1/2 -translate-x-1/2 w-64 bg-transparent border-b border-violet-500 text-zinc-100 text-lg font-semibold font-mono focus:outline-none pb-0.5 text-center"
+          className="absolute left-1/2 -translate-x-1/2 w-64 bg-transparent border-b border-violet-500 text-zinc-100 light:text-zinc-900 text-lg font-semibold font-mono focus:outline-none pb-0.5 text-center"
           autoFocus
         />
       ) : (
@@ -81,7 +81,7 @@ export default function SongBar({ title, songs, isPlaying, onTitleChange, onSave
           className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 group"
           title="Click to rename"
         >
-          <span className="text-lg font-semibold font-mono text-zinc-100 group-hover:text-white transition-colors">
+          <span className="text-lg font-semibold font-mono text-zinc-100 light:text-zinc-900 group-hover:text-white light:group-hover:text-zinc-700 transition-colors">
             {title}
           </span>
           <span className="text-zinc-600 group-hover:text-zinc-400 transition-colors text-xs">✎</span>
@@ -92,7 +92,7 @@ export default function SongBar({ title, songs, isPlaying, onTitleChange, onSave
         {/* Save */}
         <button
           onClick={() => { onSave(); setPanelOpen(false) }}
-          className="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:border-zinc-500 transition-colors"
+          className="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-700 light:border-zinc-300 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 hover:border-zinc-500 light:hover:border-zinc-400 transition-colors"
         >
           Save
         </button>
@@ -103,32 +103,32 @@ export default function SongBar({ title, songs, isPlaying, onTitleChange, onSave
             onClick={() => setPanelOpen(v => !v)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               panelOpen
-                ? 'border-violet-600 bg-violet-900/30 text-violet-300'
-                : 'border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:border-zinc-500'
+                ? 'border-violet-600 bg-violet-900/30 light:bg-violet-100/30 text-violet-300 light:text-violet-600'
+                : 'border-zinc-700 light:border-zinc-300 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 hover:border-zinc-500 light:hover:border-zinc-400'
             }`}
           >
             Songs {songs.length > 0 && <span className="ml-1 text-zinc-500">{songs.length}</span>}
           </button>
 
           {panelOpen && (
-            <div className="absolute right-0 top-full mt-1 w-72 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-20 overflow-hidden">
+            <div className="absolute right-0 top-full mt-1 w-72 bg-zinc-900 light:bg-white border border-zinc-700 light:border-zinc-200 rounded-xl shadow-2xl z-20 overflow-hidden">
               {songs.length === 0 ? (
-                <p className="px-4 py-6 text-xs text-zinc-600 text-center">No saved songs yet.</p>
+                <p className="px-4 py-6 text-xs text-zinc-600 light:text-zinc-500 text-center">No saved songs yet.</p>
               ) : (
                 <ul className="max-h-80 overflow-y-auto">
                   {songs.map(song => (
                     <li
                       key={song.id}
-                      className="flex items-center gap-2 px-4 py-2.5 hover:bg-zinc-800 group/song cursor-pointer border-b border-zinc-800 last:border-0"
+                      className="flex items-center gap-2 px-4 py-2.5 hover:bg-zinc-800 light:hover:bg-zinc-50 group/song cursor-pointer border-b border-zinc-800 light:border-zinc-100 last:border-0"
                       onClick={() => { onLoad(song); setPanelOpen(false) }}
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-zinc-200 font-mono truncate">{song.name}</p>
-                        <p className="text-xs text-zinc-600">{relativeTime(song.savedAt)}</p>
+                        <p className="text-sm text-zinc-200 light:text-zinc-800 font-mono truncate">{song.name}</p>
+                        <p className="text-xs text-zinc-600 light:text-zinc-500">{relativeTime(song.savedAt)}</p>
                       </div>
                       <button
                         onClick={e => { e.stopPropagation(); onDelete(song.id) }}
-                        className="opacity-0 group-hover/song:opacity-100 text-zinc-600 hover:text-red-400 transition-all text-sm flex-shrink-0 px-1"
+                        className="opacity-0 group-hover/song:opacity-100 text-zinc-600 light:text-zinc-400 hover:text-red-400 transition-all text-sm flex-shrink-0 px-1"
                         title="Delete"
                       >
                         ×

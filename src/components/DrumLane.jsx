@@ -14,7 +14,7 @@ export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, 
         {pattern.tracks.map((track, trackIndex) => (
           <div key={track.sound} className="flex items-center gap-2 group/track">
             {/* Sound label */}
-            <span className="text-xs text-zinc-500 font-mono w-7 text-right flex-shrink-0 select-none">
+            <span className="text-xs text-zinc-500 light:text-zinc-600 font-mono w-7 text-right flex-shrink-0 select-none">
               {track.sound}
             </span>
 
@@ -34,8 +34,8 @@ export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, 
                           ? 'bg-white'
                           : 'bg-violet-500 hover:bg-violet-400'
                         : isCurrentStep
-                        ? 'bg-zinc-600'
-                        : 'bg-zinc-800 hover:bg-zinc-700'
+                        ? 'bg-zinc-600 light:bg-zinc-400'
+                        : 'bg-zinc-800 light:bg-zinc-200 hover:bg-zinc-700 light:hover:bg-zinc-300'
                     }`}
                   />
                 )
@@ -64,7 +64,7 @@ export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, 
                   <button
                     key={sound}
                     onClick={() => { onAddTrack(lane.id, sound); setShowSoundPicker(false) }}
-                    className="px-2 py-0.5 text-xs font-mono bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-100 rounded transition-colors"
+                    className="px-2 py-0.5 text-xs font-mono bg-zinc-800 light:bg-zinc-100 hover:bg-zinc-700 light:hover:bg-zinc-200 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 rounded transition-colors"
                   >
                     {sound}
                   </button>
@@ -79,7 +79,7 @@ export default function DrumLane({ lane, currentStep, onToggleStep, onAddTrack, 
             ) : (
               <button
                 onClick={() => setShowSoundPicker(true)}
-                className="text-xs text-zinc-700 hover:text-zinc-400 transition-colors font-mono"
+                className="text-xs text-zinc-700 light:text-zinc-500 hover:text-zinc-400 transition-colors font-mono"
               >
                 + add sound
               </button>

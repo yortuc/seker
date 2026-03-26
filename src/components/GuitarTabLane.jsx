@@ -58,11 +58,11 @@ export default function GuitarTabLane({ lane, onUpdateTabCell, onUpdateTabColumn
     <div className="flex-1 min-w-0">
       {/* Instrument selector */}
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-[10px] text-zinc-600 font-mono">inst</span>
+        <span className="text-[10px] text-zinc-600 light:text-zinc-500 font-mono">inst</span>
         <select
           value={instrument}
           onChange={e => onUpdateTabInstrument(lane.id, e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-zinc-300 font-mono focus:outline-none focus:border-violet-500 cursor-pointer"
+          className="bg-zinc-800 light:bg-white border border-zinc-700 light:border-zinc-300 rounded px-2 py-0.5 text-xs text-zinc-300 light:text-zinc-700 font-mono focus:outline-none focus:border-violet-500 cursor-pointer"
         >
           {INSTRUMENT_GROUPS.map(group => (
             <optgroup key={group.label} label={group.label}>
@@ -99,14 +99,14 @@ export default function GuitarTabLane({ lane, onUpdateTabCell, onUpdateTabColumn
                     onFocus={() => setActiveColumn(stepIndex)}
                     placeholder="·"
                     maxLength={2}
-                    className={`w-8 h-6 text-center text-xs font-mono rounded border focus:outline-none transition-colors placeholder-zinc-800${
+                    className={`w-8 h-6 text-center text-xs font-mono rounded border focus:outline-none transition-colors placeholder-zinc-800 light:placeholder-zinc-300${
                       stepIndex > 0 && stepIndex % 4 === 0 ? ' ml-1' : ''
                     } ${
                       fret >= 0
                         ? 'bg-violet-900/40 border-violet-700/60 text-violet-300'
                         : isActive
-                          ? 'bg-zinc-800/40 border-amber-700/50 text-zinc-500'
-                          : 'bg-zinc-800/40 border-zinc-800 text-zinc-500'
+                          ? 'bg-zinc-800/40 light:bg-zinc-100/40 border-amber-700/50 text-zinc-500'
+                          : 'bg-zinc-800/40 light:bg-zinc-100/40 border-zinc-800 light:border-zinc-200 text-zinc-500'
                     } ${isActive ? 'focus:border-amber-400' : 'focus:border-violet-500'}`}
                   />
                 )
@@ -119,24 +119,24 @@ export default function GuitarTabLane({ lane, onUpdateTabCell, onUpdateTabColumn
 
       {/* Chord picker */}
       <div className="flex items-center gap-2 mt-2">
-        <span className="text-[10px] text-zinc-600 font-mono">chord</span>
+        <span className="text-[10px] text-zinc-600 light:text-zinc-500 font-mono">chord</span>
         <select
           value={chordRoot}
           onChange={e => setChordRoot(e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-zinc-300 font-mono focus:outline-none focus:border-violet-500 cursor-pointer"
+          className="bg-zinc-800 light:bg-white border border-zinc-700 light:border-zinc-300 rounded px-2 py-0.5 text-xs text-zinc-300 light:text-zinc-700 font-mono focus:outline-none focus:border-violet-500 cursor-pointer"
         >
           {ROOT_NOTES.map(n => <option key={n} value={n}>{n}</option>)}
         </select>
         <select
           value={chordModifier}
           onChange={e => setChordModifier(e.target.value)}
-          className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-zinc-300 font-mono focus:outline-none focus:border-violet-500 cursor-pointer"
+          className="bg-zinc-800 light:bg-white border border-zinc-700 light:border-zinc-300 rounded px-2 py-0.5 text-xs text-zinc-300 light:text-zinc-700 font-mono focus:outline-none focus:border-violet-500 cursor-pointer"
         >
           {CHORD_MODIFIERS.map(m => <option key={m} value={m}>{m}</option>)}
         </select>
         <button
           onClick={handleInsertChord}
-          className="px-2 py-0.5 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 font-mono transition-colors"
+          className="px-2 py-0.5 rounded border border-zinc-700 light:border-zinc-300 bg-zinc-800 light:bg-zinc-100 hover:bg-zinc-700 light:hover:bg-zinc-200 text-xs text-zinc-300 light:text-zinc-700 font-mono transition-colors"
         >
           + col {activeColumn + 1}
         </button>

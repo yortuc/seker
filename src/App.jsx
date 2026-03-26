@@ -22,6 +22,7 @@ export default function App() {
   const [songTitle, setSongTitle] = useState(generateSongName)
   const [songs, setSongs] = useState(loadSongs)
   const [localModelProgress, setLocalModelProgress] = useState(null) // { text, progress }
+  const [isLight, setIsLight] = useState(false)
 
   const generateFn = localMode
     ? (desc, onStep, key, onLog) => generatePatternLocal(desc, onStep, key, (text, progress) => setLocalModelProgress({ text, progress }))
@@ -169,7 +170,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-mono">
+    <div className={`min-h-screen bg-zinc-950 light:bg-zinc-50 text-zinc-100 light:text-zinc-900 font-mono${isLight ? ' light' : ''}`}>
       <Header
         isPlaying={isPlaying}
         isInitializing={isInitializing}
@@ -187,6 +188,8 @@ export default function App() {
         localModelProgress={localModelProgress}
         webGPUAvailable={isWebGPUAvailable()}
         onToggleLocalMode={handleToggleLocalMode}
+        isLight={isLight}
+        onToggleTheme={() => setIsLight(v => !v)}
       />
 
       {error && (

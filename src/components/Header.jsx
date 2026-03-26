@@ -5,7 +5,7 @@ const SCALE_GROUPS = [
   { label: 'Western', scales: ['major', 'minor', 'dorian', 'phrygian', 'mixolydian', 'harmonic minor', 'pentatonic'] },
 ]
 
-export default function Header({ isPlaying, isInitializing, bpm, globalLpf, globalKey, onPlay, onStop, onBpmChange, onGlobalLpfChange, onGlobalKeyChange, onNew, hasLanes, localMode, localModelProgress, webGPUAvailable, onToggleLocalMode }) {
+export default function Header({ isPlaying, isInitializing, bpm, globalLpf, globalKey, onPlay, onStop, onBpmChange, onGlobalLpfChange, onGlobalKeyChange, onNew, hasLanes, localMode, localModelProgress, webGPUAvailable, onToggleLocalMode, isLight, onToggleTheme }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = () => {
@@ -16,12 +16,12 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
   }
 
   return (
-    <header className="sticky top-0 z-10 bg-zinc-950/90 backdrop-blur border-b border-zinc-800 px-4 py-3">
+    <header className="sticky top-0 z-10 bg-zinc-950/90 light:bg-white/90 backdrop-blur border-b border-zinc-800 light:border-zinc-200 px-4 py-3">
       <div className="max-w-5xl mx-auto flex items-center gap-4">
         <div className="flex items-center gap-2 mr-2">
           <span className="text-violet-400 text-xl">♩</span>
-          <h1 className="text-lg font-bold tracking-tight text-zinc-100">seker</h1>
-          <span className="text-xs text-zinc-600 hidden sm:inline">llm music composer</span>
+          <h1 className="text-lg font-bold tracking-tight text-zinc-100 light:text-zinc-900">seker</h1>
+          <span className="text-xs text-zinc-600 light:text-zinc-400 hidden sm:inline">llm music composer</span>
         </div>
 
         <div className="flex gap-2">
@@ -52,7 +52,7 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
             step={1}
             value={bpm}
             onChange={e => onBpmChange(Number(e.target.value))}
-            className="w-24 h-1.5 appearance-none bg-zinc-700 rounded-full cursor-pointer accent-violet-500"
+            className="w-24 h-1.5 appearance-none bg-zinc-700 light:bg-zinc-300 rounded-full cursor-pointer accent-violet-500"
           />
           <span className="text-xs text-violet-400 tabular-nums w-7">{bpm}</span>
         </div>
@@ -66,9 +66,9 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
             step={50}
             value={globalLpf}
             onChange={e => onGlobalLpfChange(Number(e.target.value))}
-            className="w-24 h-1.5 appearance-none bg-zinc-700 rounded-full cursor-pointer accent-emerald-500"
+            className="w-24 h-1.5 appearance-none bg-zinc-700 light:bg-zinc-300 rounded-full cursor-pointer accent-emerald-500"
           />
-          <span className={`text-xs tabular-nums w-14 ${globalLpf < 2000 ? 'text-emerald-400' : 'text-zinc-600'}`}>
+          <span className={`text-xs tabular-nums w-14 ${globalLpf < 2000 ? 'text-emerald-400' : 'text-zinc-600 light:text-zinc-400'}`}>
             {globalLpf >= 8000 ? 'open' : `${Math.round(globalLpf)}Hz`}
           </span>
         </div>
@@ -78,14 +78,14 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
           <select
             value={globalKey.root}
             onChange={e => onGlobalKeyChange({ ...globalKey, root: e.target.value })}
-            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-amber-400 font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
+            className="bg-zinc-800 light:bg-white border border-zinc-700 light:border-zinc-300 rounded px-2 py-0.5 text-xs text-amber-400 font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
           >
             {ROOT_NOTES.map(n => <option key={n} value={n}>{n}</option>)}
           </select>
           <select
             value={globalKey.scale}
             onChange={e => onGlobalKeyChange({ ...globalKey, scale: e.target.value })}
-            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-0.5 text-xs text-amber-400 font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
+            className="bg-zinc-800 light:bg-white border border-zinc-700 light:border-zinc-300 rounded px-2 py-0.5 text-xs text-amber-400 font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
           >
             {SCALE_GROUPS.map(group => (
               <optgroup key={group.label} label={group.label}>
@@ -104,14 +104,14 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 ${
                   localMode
                     ? 'border-emerald-700 bg-emerald-900/40 text-emerald-400 hover:bg-emerald-900/60'
-                    : 'border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:border-zinc-500'
+                    : 'border-zinc-700 light:border-zinc-300 text-zinc-500 hover:text-zinc-300 light:hover:text-zinc-700 hover:border-zinc-500'
                 }`}
               >
                 {localMode ? '⚡ Local AI' : '☁ Cloud AI'}
               </button>
               {localMode && localModelProgress && localModelProgress.progress < 1 && (
                 <div className="flex items-center gap-1.5">
-                  <div className="w-16 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="w-16 h-1 bg-zinc-800 light:bg-zinc-200 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-emerald-500 transition-all"
                       style={{ width: `${Math.round(localModelProgress.progress * 100)}%` }}
@@ -127,14 +127,14 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
           {hasLanes && (
             <button
               onClick={onNew}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:border-zinc-500 transition-colors"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-700 light:border-zinc-300 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 hover:border-zinc-500 light:hover:border-zinc-400 transition-colors"
             >
               New
             </button>
           )}
           <button
             onClick={handleShare}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:border-zinc-500"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 border-zinc-700 light:border-zinc-300 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 hover:border-zinc-500 light:hover:border-zinc-400"
           >
             {copied ? (
               <>
@@ -152,6 +152,13 @@ export default function Header({ isPlaying, isInitializing, bpm, globalLpf, glob
                 Share
               </>
             )}
+          </button>
+          <button
+            onClick={onToggleTheme}
+            title={isLight ? 'Switch to dark theme' : 'Switch to light theme'}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-700 light:border-zinc-300 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 hover:border-zinc-500 light:hover:border-zinc-400 transition-colors"
+          >
+            {isLight ? '◑' : '◐'}
           </button>
         </div>
       </div>

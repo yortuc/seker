@@ -10,12 +10,12 @@ export default function FxPanel({ laneId, params, onUpdateParam, onAddEffect, on
   const available = Object.keys(EFFECT_DEFS).filter(t => !activeTypes.has(t))
 
   return (
-    <div className="mt-2 pt-2 border-t border-zinc-800">
+    <div className="mt-2 pt-2 border-t border-zinc-800 light:border-zinc-200">
       {/* Header row */}
       <div className="flex items-center gap-2">
         <button
           onClick={() => setOpen(v => !v)}
-          className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors select-none"
+          className="flex items-center gap-1.5 text-xs text-zinc-600 light:text-zinc-500 hover:text-zinc-400 transition-colors select-none"
         >
           <span>{open ? '▼' : '▶'}</span>
           <span className="font-mono uppercase tracking-wider">FX</span>
@@ -44,7 +44,7 @@ export default function FxPanel({ laneId, params, onUpdateParam, onAddEffect, on
                     step={def.step}
                     value={value}
                     onChange={e => onUpdateParam(laneId, type, Number(e.target.value))}
-                    className="flex-1 h-1.5 appearance-none bg-zinc-700 rounded-full cursor-pointer accent-violet-500 min-w-0"
+                    className="flex-1 h-1.5 appearance-none bg-zinc-700 light:bg-zinc-300 rounded-full cursor-pointer accent-violet-500 min-w-0"
                   />
                   <span className="text-xs text-violet-400 tabular-nums w-10 text-right flex-shrink-0">
                     {def.format(value)}
@@ -70,7 +70,7 @@ export default function FxPanel({ laneId, params, onUpdateParam, onAddEffect, on
                     <button
                       key={type}
                       onClick={() => { onAddEffect(laneId, type); setShowPicker(false) }}
-                      className="px-2 py-0.5 text-xs font-mono bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-100 rounded transition-colors border border-zinc-700"
+                      className="px-2 py-0.5 text-xs font-mono bg-zinc-800 light:bg-zinc-100 hover:bg-zinc-700 light:hover:bg-zinc-200 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900 rounded transition-colors border border-zinc-700 light:border-zinc-300"
                     >
                       {EFFECT_DEFS[type].label}
                     </button>
@@ -83,7 +83,7 @@ export default function FxPanel({ laneId, params, onUpdateParam, onAddEffect, on
               ) : (
                 <button
                   onClick={() => setShowPicker(true)}
-                  className="text-xs text-zinc-700 hover:text-zinc-400 transition-colors font-mono"
+                  className="text-xs text-zinc-700 light:text-zinc-500 hover:text-zinc-400 transition-colors font-mono"
                 >
                   + add effect
                 </button>

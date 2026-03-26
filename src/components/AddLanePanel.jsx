@@ -37,7 +37,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
   }
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 border-dashed rounded-xl p-4">
+    <div className="bg-zinc-900 light:bg-zinc-50 border border-zinc-800 light:border-zinc-200 border-dashed rounded-xl p-4">
       {/* Track type tabs */}
       <div className="flex gap-1.5 mb-3">
         <button
@@ -45,7 +45,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
           className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
             activeTab === 'strudel'
               ? 'bg-violet-600 text-white'
-              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+              : 'bg-zinc-800 light:bg-zinc-100 text-zinc-400 light:text-zinc-600 hover:text-zinc-200 light:hover:text-zinc-900 hover:bg-zinc-700 light:hover:bg-zinc-200'
           }`}
         >
           Strudel ✨
@@ -55,7 +55,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
           className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
             activeTab === 'drum'
               ? 'bg-violet-600 text-white'
-              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+              : 'bg-zinc-800 light:bg-zinc-100 text-zinc-400 light:text-zinc-600 hover:text-zinc-200 light:hover:text-zinc-900 hover:bg-zinc-700 light:hover:bg-zinc-200'
           }`}
         >
           Drums 🥁
@@ -65,7 +65,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
           className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
             activeTab === 'instrument'
               ? 'bg-violet-600 text-white'
-              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+              : 'bg-zinc-800 light:bg-zinc-100 text-zinc-400 light:text-zinc-600 hover:text-zinc-200 light:hover:text-zinc-900 hover:bg-zinc-700 light:hover:bg-zinc-200'
           }`}
         >
           Instrument 🎸
@@ -75,7 +75,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
           className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
             activeTab === 'notegrid'
               ? 'bg-violet-600 text-white'
-              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+              : 'bg-zinc-800 light:bg-zinc-100 text-zinc-400 light:text-zinc-600 hover:text-zinc-200 light:hover:text-zinc-900 hover:bg-zinc-700 light:hover:bg-zinc-200'
           }`}
         >
           Note Grid 🎹
@@ -93,7 +93,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
               onKeyDown={e => e.key === 'Enter' && !loading && handleGenerate()}
               placeholder="Describe a pattern… (e.g. 'funky drum pattern', 'muse - muscle museum bass')"
               disabled={loading}
-              className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-violet-500 disabled:opacity-50"
+              className="flex-1 bg-zinc-800 light:bg-white border border-zinc-700 light:border-zinc-300 rounded-lg px-3 py-2 text-sm text-zinc-100 light:text-zinc-900 placeholder-zinc-600 focus:outline-none focus:border-violet-500 disabled:opacity-50"
             />
             <button
               onClick={handleGenerate}
@@ -119,7 +119,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
       {/* Drum panel */}
       {activeTab === 'drum' && (
         <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-500 light:text-zinc-600">
             16-step sequencer · bd sd hh ho cp rows · click steps to toggle
           </p>
           <button
@@ -134,7 +134,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
       {/* Instrument panel */}
       {activeTab === 'instrument' && (
         <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-500 light:text-zinc-600">
             Guitar tab · 6 strings · standard tuning · type frets or chord shorthand (e.g. 022100)
           </p>
           <button
@@ -149,7 +149,7 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
       {/* Note grid panel */}
       {activeTab === 'notegrid' && (
         <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-500 light:text-zinc-600">
             Piano roll · 2 octaves (C3–B4) · 16 steps · click cells to draw notes
           </p>
           <button

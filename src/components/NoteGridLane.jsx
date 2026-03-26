@@ -69,7 +69,7 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
                 className={`px-2 py-0.5 text-xs font-mono rounded transition-colors ${
                   inst === pattern.instrument
                     ? 'bg-violet-600 text-white'
-                    : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-100'
+                    : 'bg-zinc-800 light:bg-zinc-100 hover:bg-zinc-700 light:hover:bg-zinc-200 text-zinc-400 light:text-zinc-600 hover:text-zinc-100 light:hover:text-zinc-900'
                 }`}
               >
                 {inst}
@@ -80,7 +80,7 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
         ) : (
           <button
             onClick={() => setShowInstruments(true)}
-            className="text-xs text-zinc-600 hover:text-zinc-400 font-mono transition-colors"
+            className="text-xs text-zinc-600 light:text-zinc-500 hover:text-zinc-400 font-mono transition-colors"
           >
             {pattern.instrument} ▾
           </button>
@@ -90,12 +90,12 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
         <div className="flex items-center gap-1 ml-auto select-none">
           <button
             onClick={() => setZoom(z => Math.max(MIN_ZOOM, +(z - ZOOM_STEP).toFixed(2)))}
-            className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-200 bg-zinc-800 hover:bg-zinc-700 rounded text-xs transition-colors"
+            className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-200 light:hover:text-zinc-700 bg-zinc-800 light:bg-zinc-100 hover:bg-zinc-700 light:hover:bg-zinc-200 rounded text-xs transition-colors"
           >−</button>
-          <span className="text-xs font-mono text-zinc-600 w-8 text-center">{zoom}×</span>
+          <span className="text-xs font-mono text-zinc-600 light:text-zinc-500 w-8 text-center">{zoom}×</span>
           <button
             onClick={() => setZoom(z => Math.min(MAX_ZOOM, +(z + ZOOM_STEP).toFixed(2)))}
-            className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-200 bg-zinc-800 hover:bg-zinc-700 rounded text-xs transition-colors"
+            className="w-5 h-5 flex items-center justify-center text-zinc-500 hover:text-zinc-200 light:hover:text-zinc-700 bg-zinc-800 light:bg-zinc-100 hover:bg-zinc-700 light:hover:bg-zinc-200 rounded text-xs transition-colors"
           >+</button>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
       {/* Grid */}
       <div ref={containerRef} className="overflow-x-auto overflow-y-visible cursor-crosshair select-none">
         <div
-          className="inline-block border-t border-l border-zinc-800"
+          className="inline-block border-t border-l border-zinc-800 light:border-zinc-200"
           style={{ userSelect: 'none' }}
         >
           {notes.map((noteObj, noteIndex) => {
@@ -114,9 +114,9 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
               <div key={noteObj.note} className="flex" style={{ height: cellH }}>
                 {/* Piano key label */}
                 <div
-                  className={`flex-shrink-0 flex items-center justify-end pr-1 border-r border-b border-zinc-800 ${
-                    isSharp ? 'bg-zinc-900' : 'bg-zinc-950'
-                  } ${isRoot ? 'border-t border-t-violet-900/50' : ''}`}
+                  className={`flex-shrink-0 flex items-center justify-end pr-1 border-r border-b border-zinc-800 light:border-zinc-200 ${
+                    isSharp ? 'bg-zinc-900 light:bg-zinc-100' : 'bg-zinc-950 light:bg-white'
+                  } ${isRoot ? 'border-t border-t-violet-900/50 light:border-t-violet-300/50' : ''}`}
                   style={{ width: LABEL_W, height: cellH, fontSize }}
                 >
                   <span className={`font-mono leading-none ${
@@ -139,9 +139,9 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
                       onMouseDown={() => handleCellMouseDown(noteIndex, stepIndex)}
                       onMouseEnter={() => handleCellMouseEnter(noteIndex, stepIndex)}
                       className={`flex-shrink-0 border-b ${
-                        isLastInGroup ? 'border-r border-r-zinc-700' : 'border-r border-r-zinc-800'
+                        isLastInGroup ? 'border-r border-r-zinc-700 light:border-r-zinc-300' : 'border-r border-r-zinc-800 light:border-r-zinc-200'
                       } ${
-                        isBeatStart && stepIndex > 0 ? 'border-l border-l-zinc-700' : ''
+                        isBeatStart && stepIndex > 0 ? 'border-l border-l-zinc-700 light:border-l-zinc-300' : ''
                       } ${
                         active
                           ? isCurrentStep
@@ -150,11 +150,11 @@ export default function NoteGridLane({ lane, currentStep, onToggleCell, onSetCel
                             ? 'bg-violet-500 hover:bg-violet-400'
                             : 'bg-emerald-500 hover:bg-emerald-400'
                           : isCurrentStep
-                          ? isSharp ? 'bg-zinc-700' : 'bg-zinc-800'
+                          ? isSharp ? 'bg-zinc-700 light:bg-zinc-300' : 'bg-zinc-800 light:bg-zinc-200'
                           : isSharp
-                          ? 'bg-zinc-900 hover:bg-zinc-800'
-                          : 'bg-zinc-950 hover:bg-zinc-900'
-                      } border-b-zinc-800`}
+                          ? 'bg-zinc-900 light:bg-zinc-100 hover:bg-zinc-800 light:hover:bg-zinc-200'
+                          : 'bg-zinc-950 light:bg-white hover:bg-zinc-900 light:hover:bg-zinc-100'
+                      } border-b-zinc-800 light:border-b-zinc-200`}
                       style={{ width: cellW, height: cellH }}
                     />
                   )
