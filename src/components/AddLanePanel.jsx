@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, onAddDrumLane, onAddInstrumentLane, onAddNoteGridLane }) {
+export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, onAddDrumLane, onAddInstrumentLane, onAddNoteGridLane, onAddEuclideanLane }) {
   const [activeTab, setActiveTab] = useState('strudel')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
@@ -80,6 +80,16 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
         >
           Note Grid 🎹
         </button>
+        <button
+          onClick={() => setActiveTab('euclidean')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
+            activeTab === 'euclidean'
+              ? 'bg-violet-600 text-white'
+              : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
+          }`}
+        >
+          Euclidean ⬡
+        </button>
       </div>
 
       {/* Strudel panel */}
@@ -142,6 +152,21 @@ export default function AddLanePanel({ globalKey, onLog, generateFn, onAddLane, 
             className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors whitespace-nowrap"
           >
             Add instrument track
+          </button>
+        </div>
+      )}
+
+      {/* Euclidean panel */}
+      {activeTab === 'euclidean' && (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-zinc-500">
+            Euclidean rhythm · adjust hits, steps & rotation · works great layered
+          </p>
+          <button
+            onClick={onAddEuclideanLane}
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors whitespace-nowrap"
+          >
+            Add euclidean
           </button>
         </div>
       )}

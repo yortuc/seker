@@ -53,12 +53,13 @@ export default function App() {
 
   const {
     lanes,
-    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
+    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, addEuclideanLane, removeLane,
     updateParam, addEffect, removeEffect, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack,
     updateTabCell, updateTabColumn, updateTabInstrument,
     toggleNoteGridCell, setNoteGridCell, updateNoteGridInstrument,
+    updateEuclideanPattern,
     loadLanes, clearLanes, applySceneState
   } = useLanes()
   const { isPlaying, isInitializing, error, play, stop, debouncedPlay } = useStrudel()
@@ -226,6 +227,7 @@ export default function App() {
         onAddDrumLane={addDrumLane}
         onAddInstrumentLane={addInstrumentLane}
         onAddNoteGridLane={addNoteGridLane}
+        onAddEuclideanLane={addEuclideanLane}
         onRemoveLane={removeLane}
         onUpdateParam={updateParam}
         onAddEffect={addEffect}
@@ -243,6 +245,7 @@ export default function App() {
         onToggleNoteGridCell={toggleNoteGridCell}
         onSetNoteGridCell={setNoteGridCell}
         onUpdateNoteGridInstrument={updateNoteGridInstrument}
+        onUpdateEuclideanPattern={updateEuclideanPattern}
         onLog={handleLog}
           />
         </div>

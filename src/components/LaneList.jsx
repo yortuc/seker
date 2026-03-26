@@ -11,6 +11,7 @@ export default function LaneList({
   onAddDrumLane,
   onAddInstrumentLane,
   onAddNoteGridLane,
+  onAddEuclideanLane,
   onRemoveLane,
   onUpdateParam,
   onAddEffect,
@@ -28,6 +29,7 @@ export default function LaneList({
   onToggleNoteGridCell,
   onSetNoteGridCell,
   onUpdateNoteGridInstrument,
+  onUpdateEuclideanPattern,
 }) {
   return (
     <main className="py-6 flex flex-col gap-3">
@@ -63,6 +65,7 @@ export default function LaneList({
           onToggleNoteGridCell={onToggleNoteGridCell}
           onSetNoteGridCell={onSetNoteGridCell}
           onUpdateNoteGridInstrument={onUpdateNoteGridInstrument}
+          onUpdateEuclideanPattern={onUpdateEuclideanPattern}
         />
       ))}
 
@@ -74,6 +77,7 @@ export default function LaneList({
         onAddDrumLane={onAddDrumLane}
         onAddInstrumentLane={onAddInstrumentLane}
         onAddNoteGridLane={onAddNoteGridLane}
+        onAddEuclideanLane={onAddEuclideanLane}
       />
     </main>
   )
