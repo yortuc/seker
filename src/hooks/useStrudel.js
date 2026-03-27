@@ -30,6 +30,7 @@ export function useStrudel() {
         await evaluate('stack(s("bd sd hh ho cp mt ht lt rim cb arpy pluck bass moog juno gtr jazz sitar jvbass"), note("c3").s("pluck")).gain(0)')
         await new Promise(r => setTimeout(r, 2000))
         hush()
+        await new Promise(r => setTimeout(r, 100))
       }
 
       await evaluate(code)
