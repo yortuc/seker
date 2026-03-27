@@ -11,6 +11,7 @@ export default function Lane({
   onLog,
   generateFn,
   onRemove,
+  onDuplicate,
   onUpdateParam,
   onAddEffect,
   onRemoveEffect,
@@ -223,6 +224,13 @@ export default function Lane({
             title="Solo"
           >
             S
+          </button>
+          <button
+            onClick={() => onDuplicate(lane.id)}
+            className="px-2 py-1 rounded text-xs font-mono text-zinc-600 light:text-zinc-400 hover:text-zinc-300 light:hover:text-zinc-700 hover:bg-zinc-800 light:hover:bg-zinc-100 transition-colors"
+            title="Duplicate lane"
+          >
+            ⧉
           </button>
           <button
             onClick={() => onRemove(lane.id)}

@@ -66,6 +66,23 @@ export function useLanes() {
 
   const removeLane = (id) => setLanes(prev => prev.filter(l => l.id !== id))
 
+  const duplicateLane = (id) => {
+    setLanes(prev => {
+      const idx = prev.findIndex(l => l.id === id)
+      if (idx === -1) return prev
+      const src = prev[idx]
+      const baseName = src.name.replace(/ - \d+$/, '')
+      const copies = prev.filter(l => l.name.replace(/ - \d+$/, '') === baseName).length
+      const copy = {
+        ...JSON.parse(JSON.stringify(src)),
+        id: uuidv4(),
+        name: `${baseName} - ${copies + 1}`,
+        orbit: prev.length,
+      }
+      return [...prev.slice(0, idx + 1), copy, ...prev.slice(idx + 1)]
+    })
+  }
+
   const updateParam = (id, effectType, value) => {
     setLanes(prev => prev.map(l =>
       l.id !== id ? l : {
@@ -261,7 +278,7 @@ export function useLanes() {
 
   return {
     lanes,
-    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane,
+    addLane, addDrumLane, addInstrumentLane, addNoteGridLane, removeLane, duplicateLane,
     updateParam, addEffect, removeEffect, updateCode, updatePromptAndCode,
     toggleMute, toggleSolo,
     toggleDrumStep, addDrumTrack, removeDrumTrack,

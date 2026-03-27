@@ -12,6 +12,7 @@ export default function LaneList({
   onAddInstrumentLane,
   onAddNoteGridLane,
   onRemoveLane,
+  onDuplicateLane,
   onUpdateParam,
   onAddEffect,
   onRemoveEffect,
@@ -47,6 +48,7 @@ export default function LaneList({
           onLog={onLog}
           generateFn={generateFn}
           onRemove={onRemoveLane}
+          onDuplicate={onDuplicateLane}
           onUpdateParam={onUpdateParam}
           onAddEffect={onAddEffect}
           onRemoveEffect={onRemoveEffect}
