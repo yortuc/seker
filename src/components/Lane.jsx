@@ -46,6 +46,7 @@ export default function Lane({
   // Step metadata for collapsed beat strip
   const numSteps = laneType === 'drum' ? lane.pattern.steps
     : laneType === 'notegrid' ? lane.pattern.steps
+    : laneType === 'instrument' ? lane.pattern.tab.length
     : 16
 
   const activeSteps = (() => {
@@ -166,6 +167,7 @@ export default function Lane({
         ) : laneType === 'instrument' ? (
           <GuitarTabLane
             lane={lane}
+            currentStep={currentStep}
             onUpdateTabCell={onUpdateTabCell}
             onUpdateTabColumn={onUpdateTabColumn}
             onUpdateTabInstrument={onUpdateTabInstrument}

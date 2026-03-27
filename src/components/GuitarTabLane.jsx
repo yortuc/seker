@@ -6,7 +6,7 @@ const DISPLAY_ORDER = [5, 4, 3, 2, 1, 0]
 const DISPLAY_NAMES = ['e', 'B', 'G', 'D', 'A', 'E']
 const ROOT_NOTES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
 
-export default function GuitarTabLane({ lane, onUpdateTabCell, onUpdateTabColumn, onUpdateTabInstrument }) {
+export default function GuitarTabLane({ lane, currentStep, onUpdateTabCell, onUpdateTabColumn, onUpdateTabInstrument }) {
   const { pattern } = lane
   const { tab, instrument } = pattern
   const steps = tab.length
@@ -88,6 +88,7 @@ export default function GuitarTabLane({ lane, onUpdateTabCell, onUpdateTabColumn
               {tab.map((column, stepIndex) => {
                 const fret = column[stringIdx]
                 const isActive = stepIndex === activeColumn
+                const isCurrentStep = stepIndex === currentStep
                 return (
                   <input
                     key={stepIndex}
@@ -103,8 +104,10 @@ export default function GuitarTabLane({ lane, onUpdateTabCell, onUpdateTabColumn
                       stepIndex > 0 && stepIndex % 4 === 0 ? ' ml-1' : ''
                     } ${
                       fret >= 0
-                        ? 'bg-violet-900/40 border-violet-700/60 text-violet-300'
-                        : isActive
+                        ? isCurrentStep ? 'bg-white border-white text-zinc-900' : 'bg-violet-900/40 border-violet-700/60 text-violet-300'
+                        : isCurrentStep
+                          ? 'bg-zinc-600/40 light:bg-zinc-300/40 border-zinc-500 light:border-zinc-400 text-zinc-300 light:text-zinc-700'
+                          : isActive
                           ? 'bg-zinc-800/40 light:bg-zinc-100/40 border-amber-700/50 text-zinc-500'
                           : 'bg-zinc-800/40 light:bg-zinc-100/40 border-zinc-800 light:border-zinc-200 text-zinc-500'
                     } ${isActive ? 'focus:border-amber-400' : 'focus:border-violet-500'}`}
